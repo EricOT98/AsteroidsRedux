@@ -1,19 +1,20 @@
 var gameNs = {};
 
 function main() {
-  init();
+    init();
+    const game = new Game ();
+    gameNs.game = game;
+    game.init();
+    game.update();
 }
 
 /**
 * Initialise the canvas
 */
 function init() {
-    console.log('initialising Game');
-
     var canv = document.createElement('canvas');
     canv.id = "canvas";
     canv.width = window.innerWidth;
     canv.height = window.innerHeight;
-
     document.body.appendChild(canv);
 }
