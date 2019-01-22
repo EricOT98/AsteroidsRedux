@@ -48,6 +48,7 @@ class Player{
 
     this.px = this.positionX - this.pointLength * Math.cos(radians);
     this.py = this.positionY - this.pointLength * Math.sin(radians);
+    console.log(this.positionX);
   }
 
   draw(ctx)
