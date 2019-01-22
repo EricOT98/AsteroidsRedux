@@ -11,7 +11,7 @@ class Game {
    */
   constructor() {
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
-    this.player = new Player(100,100,100);
+    this.player = new Player(100,100,50);
 
 
   }
