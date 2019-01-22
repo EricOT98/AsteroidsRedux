@@ -12,7 +12,7 @@ class Game {
   constructor() {
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.player = new Player(100,100,50);
-
+    this.wasUp = true;
 
   }
 
@@ -31,6 +31,13 @@ class Game {
     }
     if(this.keyboardManager["KeyA"]){
       this.player.turn(-1);
+    }
+    if(this.keyboardManager["Space"] && this.wasUp) {
+      this.wasUp = false;
+      this.player.fire();
+    }
+    else if(!this.keyboardManager["Space"]) {
+      this.wasUp = true;
     }
 
     this.draw();

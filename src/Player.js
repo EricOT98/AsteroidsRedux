@@ -24,6 +24,13 @@ class Player{
     this.pointLength = 50;
     this.px = 0;
     this.py = 0;
+
+    this.bullets = [];
+  }
+
+  fire()
+  {
+    this.bullets.push(new Projectile(this.px + (this.width / 2), this.py + (this.height / 2), this.angle));
   }
 
   turn(dir)
@@ -49,6 +56,16 @@ class Player{
     this.px = this.positionX - this.pointLength * Math.cos(radians);
     this.py = this.positionY - this.pointLength * Math.sin(radians);
     //console.log(this.positionX, this.positionY);
+
+    for(var x=0; x < this.bullets.length; x++)
+    {
+      this.bullets[x].update();
+
+      if(this.bullets[x].alive === false)
+      {
+        this.bullets.splice(x, 1); //remove dead bullet
+      }
+    }
   }
 
   draw(ctx)
@@ -60,6 +77,10 @@ class Player{
    ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
    ctx.restore();
 
+   for(var x=0; x < this.bullets.length; x++)
+   {
+     this.bullets[x].draw(ctx);
+   }
 
    // bounds check
 
