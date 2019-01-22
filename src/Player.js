@@ -11,11 +11,19 @@ class Player{
 
     this.isThrusting = false;
     this.thrust = 0.1;
-    this.turnSpeed = 0.001;
-    this.angle = 0;
+    this.turnSpeed = 0.1;
+    this.angle = Math.PI;
 
     this.velocityX = 0;
     this.velocityY = 0;
+
+
+    this.width = 100;
+    this.height = 100;
+
+    this.pointLength = 50;
+    this.px = 0;
+    this.py = 0;
   }
 
   turn(dir)
@@ -25,22 +33,32 @@ class Player{
 
   update()
   {
-    var radians = this.angle/Math.PI*180;
+    var radians = this.angle;
 
     if(this.isThrusting){
       this.velocityX += Math.cos(radians)* this.thrust;
       this.velocityY += Math.sin(radians)* this.thrust;
     }
 
-    this.velocityX *=0.98;
-    this.velocityY *=0.98; //friction
+    this.velocityX *=0.985;
+    this.velocityY *=0.985; //friction
 
     this.positionX -= this.velocityX;
     this.positionY -= this.velocityY;
+
+    this.px = this.positionX - this.pointLength * Math.cos(radians);
+    this.py = this.positionY - this.pointLength * Math.sin(radians);
+    console.log(this.positionX);
   }
 
   draw(ctx)
   {
-    ctx.drawImage(this.sprite, this.positionX, this.positionY, 100, 100);
+   ctx.save();
+   ctx.translate(this.positionX + (this.width / 2), this.positionY + (this.height / 2));
+   ctx.rotate(this.angle);
+   ctx.translate((this.positionX + (this.width / 2)) * -1, (this.positionY + (this.height / 2)) * -1);
+   ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
+   ctx.restore();
+
   }
 }
