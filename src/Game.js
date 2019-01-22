@@ -12,6 +12,9 @@ class Game {
   constructor() {
     this.player = new Player(100,100,100);
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
+    this.player = new Player(100,100,100);
+
+
   }
 
   init() {
@@ -37,7 +40,12 @@ class Game {
 
 
     ctx.clearRect(0, 0, canv.width, canv.height);
+<<<<<<< HEAD
     console.log("Draw");
     this.player.draw(ctx);
+=======
+    this.player.draw(ctx);
+
+>>>>>>> solved conflicts
   }
 }
