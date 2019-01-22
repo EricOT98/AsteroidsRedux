@@ -48,7 +48,7 @@ class Player{
 
     this.px = this.positionX - this.pointLength * Math.cos(radians);
     this.py = this.positionY - this.pointLength * Math.sin(radians);
-    console.log(this.positionX);
+    //console.log(this.positionX, this.positionY);
   }
 
   draw(ctx)
@@ -60,5 +60,20 @@ class Player{
    ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
    ctx.restore();
 
+
+   // bounds check
+
+   if(this.positionX < this.radius - 150){
+       this.positionX = window.innerWidth + 150;
+   }
+   if(this.positionX > window.innerWidth + 150){
+       this.positionX = this.radius - 150;
+   }
+   if(this.positionY < this.radius - 150){
+       this.positionY = window.innerHeight + 150;
+   }
+   if(this.positionY > window.innerHeight + 150){
+       this.positionY = this.radius - 150;
+   }
   }
 }
