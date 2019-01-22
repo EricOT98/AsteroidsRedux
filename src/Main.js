@@ -1,5 +1,8 @@
 var gameNs = {};
 
+/**
+ * Initialise and create game
+ */
 function main() {
     init();
     const game = new Game ();
