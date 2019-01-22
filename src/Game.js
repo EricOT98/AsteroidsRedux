@@ -31,13 +31,13 @@ class Game {
     this.player.update();
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
 
-    this.player.isThrusting = (this.keyboardManager.keyStatusDict["KeyW"]);
+    this.player.isThrusting = (this.keyboardManager["KeyW"]);
 
-    if(this.keyboardManager.keyStatusDict["KeyD"])
+    if(this.keyboardManager["KeyD"])
     {
       this.player.turn(1);
     }
-    if(this.keyboardManager.keyStatusDict["KeyA"])
+    if(this.keyboardManager["KeyA"])
     {
       this.player.turn(-1);
     }
