@@ -13,8 +13,14 @@ canvas{
 button {
     font-family: Kalam, serif;
     font-size: 40px;
+    outline: none;
+    border: none;
 }
 
 button:focus {
     outline: none;
+}
+
+button:after {
+    right: -.25em;
 }
