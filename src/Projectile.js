@@ -8,6 +8,8 @@ class Projectile{
     this.velocityY = 0;
 
     this.angle = angle;
+    this.radius = 5;
+    this.alive = true;
   }
   update(){
     var radians = this.angle;
@@ -21,11 +23,25 @@ class Projectile{
   }
   draw(ctx){
     ctx.beginPath();
-    ctx.arc(this.positionX, this.positionY, 5, 0, 2 * Math.PI);
+    ctx.fillStyle = "white";
+    ctx.strokeStyle= "white";
+    ctx.arc(this.positionX, this.positionY, this.radius, 0, 2 * Math.PI);
     ctx.stroke();
+    ctx.fill();
 
 
-    
+    if(this.positionX < this.radius - 150){
+        this.alive = false;
+    }
+    if(this.positionX > window.innerWidth + 150){
+        this.alive = false;
+    }
+    if(this.positionY < this.radius - 150){
+        this.alive = false;
+    }
+    if(this.positionY > window.innerHeight + 150){
+        this.alive = false;
+    }
   }
 
 }

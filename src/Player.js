@@ -60,6 +60,11 @@ class Player{
     for(var x=0; x < this.bullets.length; x++)
     {
       this.bullets[x].update();
+
+      if(this.bullets[x].alive === false)
+      {
+        this.bullets.splice(x, 1); //remove dead bullet
+      }
     }
   }
 
