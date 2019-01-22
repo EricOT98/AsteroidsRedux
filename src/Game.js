@@ -62,13 +62,23 @@ class Game {
 
     let leaderboardBtn = new Button("Leaderboard",
         this.menuHandler.goToScene.bind(this.menuHandler, "Leaderboard"),
-        {'x': 35, 'y': 70, 'width': 30, 'height': 10},
+        {'x': 35, 'y': 65, 'width': 30, 'height': 10},
         "%"
     );
 
     leaderboardBtn.makeImageButton("assets/ui/leaderboard_btn.png");
     leaderboardBtn.addHoverImage("assets/ui/leaderboard_btn_prssed.png");
     mainMenu.addButton("Leaderboard", leaderboardBtn);
+
+    let controlsBtn = new Button("Controls",
+        this.menuHandler.goToScene.bind(this.menuHandler, "Controls"),
+        {'x': 35, 'y': 80, 'width': 30, 'height': 10},
+        "%"
+    );
+
+    controlsBtn.makeImageButton("assets/ui/control_btn.png");
+    controlsBtn.addHoverImage("assets/ui/control_btn_pressed.png");
+    mainMenu.addButton("Controls", controlsBtn);
 
     mainMenuScene.addMenu(mainMenu);
     mainMenuScene._containerDiv.style.backgroundImage = "url('assets/tempBackground.jpg')";
@@ -91,6 +101,24 @@ class Game {
     leaderboardMenu.addButton("Back", backBtn);
     leaderboardScene.addMenu(leaderboardMenu);
     this.menuHandler.addScene("Leaderboard",leaderboardScene);
+
+    let controlScene = new Scene("Controls", mainDiv,
+        {'x': 0,'y': 0, 'width': 100, 'height': 100}
+    );
+
+    let controlsMenu = new Menu("Leaderboard",
+        {'x': 20, 'y': 20, 'width': 60, 'height': 60}
+    );
+    let backBtn2 = new Button("Back",
+        this.menuHandler.goToScene.bind(this.menuHandler, "Main Menu"),
+        {'x': 35, 'y': 80, 'width': 30, 'height': 10},
+        "%"
+    );
+    backBtn2.makeImageButton("assets/ui/back_btn.png");
+    backBtn2.addHoverImage("assets/ui/back_btn_pressed.png");
+    controlsMenu.addButton("Back", backBtn);
+    controlScene.addMenu(controlsMenu);
+    this.menuHandler.addScene("Controls", controlScene);
 
     this.menuHandler._theme.setPrimary(0,0,0,1);
     this.menuHandler._theme.setSecondary(49, 49, 49, 0.5);
