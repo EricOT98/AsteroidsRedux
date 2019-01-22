@@ -2,39 +2,42 @@ class KeyboardManager
 {
     /**
      * KeyboardManager constructor
+     * @param {Array of keys that are to be checked for} keyArray 
      */
-    constructor()
-    {
-        this.W_KEY = "KeyW";
-        this.A_KEY = "KeyA";
-        this.S_KEY = "KeyS";
-        this.D_KEY = "KeyD";
-        this.UP_KEY = "ArrowUp";
-        this.DOWN_KEY = "ArrowDown";
-        this.LEFT_KEY = "ArrowLeft";
-        this.RIGHT_KEY = "ArrowRight";
-        document.addEventListener("keydown", this.keyPressed.bind(this), {passive:false});
-        document.addEventListener("keyup", this.KeyReleased.bind(this), {passive:false});
-        this.keyStatusDict = {};
+    constructor(keyArray) {
+        this.keyArray = keyArray;
+        document.addEventListener("keydown", this.keyDown.bind(this), {passive:false});
+        document.addEventListener("keyup", this.KeyUp.bind(this), {passive:false});
     }
 
     /**
-     * keydown Callback function
-     * @param {KeyPress Event} e 
+     * keydown callback function
+     * @param {keydown Event} e 
      */
-    keyPressed(e)
-    {
-        this.keyStatusDict[e.code] = true;
-        e.preventDefault();
+    keyDown(e) {
+        this.keyCheck(e, true);
     }
 
     /**
-     * Key
-     * @param {*} e 
+     * keyup callback function
+     * @param {keyup Event} e 
      */
-    KeyReleased(e)
-    {
-        this.keyStatusDict[e.code] = false;
-        e.preventDefault();
+    KeyUp(e) {
+        this.keyCheck(e, false);
+    }
+
+    /**
+     * keyCheck function
+     * @param {key event} e 
+     * @param {boolean representing whether the event is a keydown or not} keyDown 
+     */
+    keyCheck(e, keyDown) {
+        keyDown = keyDown === true;
+        for(var i = 0; i < this.keyArray.length; i++){
+            if(this.keyArray[i] === e.code){
+                e.preventDefault();
+                this[e.code] = keyDown;
+            }
+        }
     }
 }
