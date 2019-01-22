@@ -28,7 +28,19 @@ class Game {
       console.log("W pressed");
     }
     this.draw();
+    this.player.update();
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
+
+    this.player.isThrusting = (this.keyboardManager.keyStatusDict["KeyW"]);
+
+    if(this.keyboardManager.keyStatusDict["KeyD"])
+    {
+      this.player.turn(1);
+    }
+    if(this.keyboardManager.keyStatusDict["KeyA"])
+    {
+      this.player.turn(-1);
+    }
   }
 
   /**
@@ -41,9 +53,13 @@ class Game {
 
     ctx.clearRect(0, 0, canv.width, canv.height);
 <<<<<<< HEAD
+<<<<<<< HEAD
     console.log("Draw");
     this.player.draw(ctx);
 =======
+=======
+
+>>>>>>> Added movement
     this.player.draw(ctx);
 
 >>>>>>> solved conflicts
