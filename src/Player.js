@@ -3,7 +3,6 @@ class Player{
   constructor(x, y, radius)
   {
     this.sprite = new Image();
-    this.sprite.src = "assets/images/PlayerShip.png";
 
     this.positionX = x;
     this.positionY = y;
@@ -26,6 +25,10 @@ class Player{
     this.py = 0;
 
     this.bullets = [];
+  }
+
+  setSprite(newsprite){
+    this.sprite = newsprite;
   }
 
   fire()
