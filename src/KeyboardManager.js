@@ -6,8 +6,11 @@ class KeyboardManager
      */
     constructor(keyArray) {
         this.keyArray = keyArray;
+        this.mouseX = 0;
+        this.mouseY = 0;
         document.addEventListener("keydown", this.keyDown.bind(this), {passive:false});
         document.addEventListener("keyup", this.KeyUp.bind(this), {passive:false});
+        document.addEventListener("mousemove", this.mouseMove.bind(this), {passive:false});
     }
 
     /**
@@ -27,9 +30,9 @@ class KeyboardManager
     }
 
     /**
-     * keyCheck function
+     * keyCheck function to update key status
      * @param {key event} e 
-     * @param {boolean representing whether the event is a keydown or not} keyDown 
+     * @param {boole representing whether the event is a keydown or not} keyDown 
      */
     keyCheck(e, keyDown) {
         keyDown = keyDown === true;
@@ -39,5 +42,14 @@ class KeyboardManager
                 this[e.code] = keyDown;
             }
         }
+    }
+
+    /**
+     * mouseMove callback function
+     * @param {mousemove event} e 
+     */
+    mouseMove(e) {
+        this.mouseX = e.clientX;
+        this.mouseY = e.clientY;
     }
 }
