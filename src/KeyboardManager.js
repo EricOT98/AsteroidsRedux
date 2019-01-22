@@ -1,5 +1,8 @@
 class KeyboardManager
 {
+    /**
+     * KeyboardManager constructor
+     */
     constructor()
     {
         this.W_KEY = "KeyW";
@@ -15,12 +18,20 @@ class KeyboardManager
         this.keyStatusDict = {};
     }
 
+    /**
+     * keydown Callback function
+     * @param {KeyPress Event} e 
+     */
     keyPressed(e)
     {
         this.keyStatusDict[e.code] = true;
         e.preventDefault();
     }
 
+    /**
+     * Key
+     * @param {*} e 
+     */
     KeyReleased(e)
     {
         this.keyStatusDict[e.code] = false;
