@@ -24,7 +24,7 @@ class Game {
    */
   update() {
 
-    this.player.update();
+    this.player.update(window.innerWidth, window.innerHeight);
     this.player.isThrusting = this.keyboardManager["KeyW"];
     if(this.keyboardManager["KeyD"]){
       this.player.turn(1);

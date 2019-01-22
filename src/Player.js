@@ -26,6 +26,13 @@ class Player{
     this.py = 0;
 
     this.bullets = [];
+
+
+    this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,120,0)');
+    this.emitter.setParticlesLifeTime(0.75);
+    this.emitter.setEmissionRate(0);
+    this.emitter.setMaxParticles(100000);
+    this.emitter.useImage("assets/images/spark.png", 5,5);
   }
 
   fire()
@@ -38,7 +45,7 @@ class Player{
     this.angle += this.turnSpeed * dir;
   }
 
-  update()
+  update(width, height)
   {
     var radians = this.angle;
 
@@ -66,12 +73,22 @@ class Player{
         this.bullets.splice(x, 1); //remove dead bullet
       }
     }
+    this.emitter.addNewParticles();
+    this.emitter.plotParticles(width, height);
+    this.emitter.setPos((this.positionX + (this.width / 2.0) + 40.0 * Math.cos(radians)), (this.positionY + (this.height / 2.0)) + 40.0 * Math.sin(radians));
+    var mag = Math.sqrt((this.velocityX * this.velocityX) + (this.velocityY * this.velocityY));
+    var newEmission = (mag / 50) * 25;
+    newEmission = newEmission < 1 ? 0 : newEmission;
+    this.emitter.setEmissionRate(newEmission);
   }
 
   draw(ctx)
   {
+
+
+   this.emitter.draw(ctx);
    ctx.save();
-   ctx.translate(this.positionX + (this.width / 2), this.positionY + (this.height / 2));
+   ctx.translate(this.positionX + (this.width / 2.0), this.positionY + (this.height / 2.0));
    ctx.rotate(this.angle);
    ctx.translate((this.positionX + (this.width / 2)) * -1, (this.positionY + (this.height / 2)) * -1);
    ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
