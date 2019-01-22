@@ -32,13 +32,10 @@ class Player{
     this.emitter.setEmissionRate(0);
     this.emitter.setMaxParticles(100000);
     this.emitter.useImage("assets/images/spark.png", 5,5);
-<<<<<<< HEAD
   }
 
   setSprite(newsprite){
     this.sprite = newsprite;
-=======
->>>>>>> 83e88e723616c88aa181e2119b98d338006ff1f3
   }
 
   fire()
