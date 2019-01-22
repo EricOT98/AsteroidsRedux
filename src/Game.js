@@ -10,11 +10,8 @@ class Game {
    * @desc simple game constructor
    */
   constructor() {
-<<<<<<< HEAD
     this.keyboardManager = new KeyboardManager();
-=======
     this.player = new Player();
->>>>>>> player created
   }
 
   init() {
@@ -37,14 +34,11 @@ class Game {
 
 
     ctx.clearRect(0, 0, canv.width, canv.height);
-<<<<<<< HEAD
+
     if(this.keyboardManager.keyStatusDict["KeyW"]){
       console.log("W pressed");
     }
     console.log("Draw");
-=======
     this.player.draw(ctx);
-  //  console.log("Draw");
->>>>>>> player created
   }
 }
