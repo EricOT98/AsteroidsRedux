@@ -10,8 +10,8 @@ class Game {
    * @desc simple game constructor
    */
   constructor() {
-    this.keyboardManager = new KeyboardManager();
     this.player = new Player(100,100,100);
+    this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
   }
 
   init() {
@@ -21,6 +21,9 @@ class Game {
    * updates the game
    */
   update() {
+    if(this.keyboardManager["KeyW"]){
+      console.log("W pressed");
+    }
     this.draw();
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
   }
@@ -34,10 +37,6 @@ class Game {
 
 
     ctx.clearRect(0, 0, canv.width, canv.height);
-
-    if(this.keyboardManager.keyStatusDict["KeyW"]){
-      console.log("W pressed");
-    }
     console.log("Draw");
     this.player.draw(ctx);
   }
