@@ -11,7 +11,7 @@ class Game {
    */
   constructor() {
     this.keyboardManager = new KeyboardManager();
-    this.player = new Player();
+    this.player = new Player(100,100,100);
   }
 
   init() {
