@@ -129,7 +129,6 @@ class Game {
             }
         }
       }
-    }
     //console.log(circleTriangle(this.center, this._radius, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]));
   }
 
