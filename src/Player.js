@@ -32,6 +32,10 @@ class Player{
     this.emitter.setMaxParticles(100000);
     this.emitter.useACircle();
     this.emitter.updateSize(3,3);
+    this.triangle = [];
+    for(let i = 0; i < 3; ++i) {
+      this.triangle.push({'x': 0, 'y': 0});
+    }
   }
 
   setSprite(newsprite){
@@ -83,12 +87,23 @@ class Player{
     var newEmission = (mag / 50) * 10;
     newEmission = newEmission < 0.5 ? 0 : newEmission;
     this.emitter.setEmissionRate(newEmission);
+    this.triangle[0].x = this.px + (this.width / 2);
+    this.triangle[0].y = this.py + (this.height / 2);
+
+    // this.triangle[1].x = this.positionX - this.pointLength * Math.cos(radians + degreesToRadians(160));
+    // this.triangle[1].y = this.positionY - this.pointLength * Math.sin(radians + degreesToRadians(160));
+    //
+    // this.triangle[2].x = this.positionX - this.pointLength * Math.cos(radians + degreesToRadians(200));
+    // this.triangle[2].y = this.positionY - this.pointLength * Math.sin(radians + degreesToRadians(200));
+    this.triangle[1].x = this.positionX + (this.width / 2.0) + 60.0 * Math.cos(radians + degreesToRadians(30));
+    this.triangle[1].y = this.positionY + (this.height / 2.0) + 60.0 * Math.sin(radians + degreesToRadians(30));
+    this.triangle[2].x = this.positionX + (this.width / 2.0) + 60.0 * Math.cos(radians - degreesToRadians(30));
+    this.triangle[2].y = this.positionY + (this.height / 2.0) + 60.0 * Math.sin(radians - degreesToRadians(30));
+
   }
 
   draw(ctx)
   {
-
-
    this.emitter.draw(ctx);
    ctx.save();
    ctx.translate(this.positionX + (this.width / 2.0), this.positionY + (this.height / 2.0));
@@ -96,6 +111,18 @@ class Player{
    ctx.translate((this.positionX + (this.width / 2)) * -1, (this.positionY + (this.height / 2)) * -1);
    ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
    ctx.restore();
+
+    ctx.beginPath();
+    ctx.lineTo(this.triangle[0].x, this.triangle[0].y);
+    ctx.lineTo(this.triangle[1].x, this.triangle[1].y);
+    ctx.lineTo(this.triangle[2].x, this.triangle[2].y);
+    ctx.lineWidth = 3;
+    ctx.closePath();
+    ctx.strokeStyle = "Red";
+    ctx.stroke();
+
+    ctx.fillStyle = "#FF000034";
+    ctx.fill();
 
    for(var x=0; x < this.bullets.length; x++)
    {
