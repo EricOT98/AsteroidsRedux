@@ -102,9 +102,9 @@ class Game {
             var asteroidX = asteroids[j].centreX;
             var asteroidY = asteroids[j].centreY;
             var asteroidRad = asteroids[j].radius;
-            if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad)){
+            if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[j].alive){
                 playerBullets[i].alive = false;
-                asteroids[j].alive = false;
+                asteroids[j].destroy();
             }
         }
     }

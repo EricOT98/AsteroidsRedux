@@ -33,7 +33,6 @@ class AsteroidManager {
     }
     var speed = randomRange(this.minSpeed, this.maxSpeed);
     var asteroid = new Asteroid(x, y, speed, rotation, rad, gen);
-    console.log(pathStart + size + pathEnd);
     asteroid.setSprite(this.assetManager.getAsset(pathStart + size + pathEnd));
     this.asteroids.push(asteroid);
   }
@@ -72,13 +71,13 @@ class AsteroidManager {
               this.createSplit(this.asteroids[i].xPos, this.asteroids[i].yPos, this.asteroids[i].rotation, asteroidGeneration + 1)
             }
             this.asteroids[i].split = true;
-            this.asteroids[i].emissionComplete = true
+          //  this.asteroids[i].emissionComplete = true
           }
           if(this.asteroids[i].emissionComplete) {
             this.asteroids.splice(i, 1); // Remove dead asteroids
           }
         }
-        else {
+        if(undefined !== this.asteroids[i] && !this.asteroids[i].emissionComplete){
           this.asteroids[i].update();
         }
       }

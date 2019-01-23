@@ -15,6 +15,15 @@ class Asteroid {
     this.radius = radius;
     this.centreX = this.xPos + this.radius;
     this.centreY = this.yPos + this.radius;
+
+    this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
+    this.emitter.setParticlesLifeTime(2);
+    this.emitter.setEmissionRate(10);
+    this.emitter.setMaxParticles(30);
+    this.emitter.useACircle();
+    this.emitter.updateSize(3,3);
+
+    this.emitTimer=0;
   }
 
   update() {
@@ -40,11 +49,24 @@ class Asteroid {
       this.centreX = this.xPos + this.radius;
       this.centreY = this.yPos + this.radius;
     }
+    else{
+      this.emitTimer+=1;
+      this.emitter.addNewParticles();
+      this.emitter.plotParticles(window.innerWidth, window.innerHeight);
+      //console.log(this.emitTimer)
+      if(this.emitTimer >= 1 * 60){
+        this.emissionComplete=true;
+      }
+    }
   }
 
   draw(ctx) {
+
     if(this.alive){
       ctx.drawImage(this.sprite, this.xPos, this.yPos, this.radius * 2, this.radius * 2);
+    }
+    else {
+      this.emitter.draw(ctx);
     }
   }
 
@@ -53,6 +75,7 @@ class Asteroid {
   }
 
   destroy() {
+      this.emitter.setPos(this.centreX,this.centreY);
       this.alive = false;
   }
 }
