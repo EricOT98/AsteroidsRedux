@@ -32,11 +32,17 @@ class Game {
 
     this.AssetManager.downloadAllImages(() => {
       this.player = new Player(100,100,50);
-      this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
+      this.player.setSprite(this.AssetManager.getAsset('assets/images/PlayerShip.png'));
+
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
+
+      this.Ai = new Alien();
+      this.Ai.setImage(this.AssetManager.getAsset('assets/images/Alien-1.png'));
+
       console.log("Loaded complete");
       this.gameLoaded = true;
-    }); // Downloads all Images, when complete inside of function executes
+    });                                                                          // Downloads all Images, when complete inside of function executes
+
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
@@ -49,10 +55,12 @@ class Game {
    * Updates the game
    */
   update() {
-
     if(this.gameLoaded && this.menuHandler.currentScene === "Game"){
       this.player.update(window.innerWidth, window.innerHeight);
+
+      this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
+
       if(this.keyboardManager["KeyD"]){
         this.player.turn(1);
       }
@@ -66,6 +74,7 @@ class Game {
       else if(!this.keyboardManager["Space"]) {
         this.wasUp = true;
       }
+
       this.asteroidManager.update();
       for(var i = 0; i < this.player.bullets.length; i++) {
         if(this.player.bullets[i].alive) {
@@ -96,6 +105,7 @@ class Game {
     var ctx = canv.getContext("2d");
     ctx.clearRect(0, 0, canv.width, canv.height);
     this.player.draw(ctx);
+    this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
   }
 
