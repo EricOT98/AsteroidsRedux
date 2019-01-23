@@ -50,6 +50,10 @@ class AsteroidManager {
   }
 
   update() {
+    if(this.asteroids.length === 0) {
+      this.initialiseAsteroids();
+    }
+    else {
       for(var i = 0; i < this.asteroids.length; i++) {
         if(!this.asteroids[i].alive ) {
           var asteroidGeneration =  this.asteroids[i].generation;
@@ -62,11 +66,11 @@ class AsteroidManager {
           this.asteroids[i].update();
         }
       }
+    }
   }
 
   draw(ctx) {
       for(var i = 0; i < this.asteroids.length; i++) {
-        console.log(i)
         this.asteroids[i].draw(ctx);
       }
   }
