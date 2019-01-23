@@ -40,14 +40,6 @@ class AsteroidManager {
 
   initialiseAsteroids() {
     for(var i = 0; i < this.initialAsteroidCount; i++) {
-        /*var spriteNo = Math.floor(randomRange(1, 4));
-        var xPos = randomRange(100, window.innerWidth - 100);
-        var yPos = randomRange(100, window.innerHeight - 100);
-        var speed = randomRange(this.minSpeed, this.maxSpeed);
-        var rotation = randomRange(0, Math.PI * 2);
-        this.asteroids[i] = new Asteroid(xPos, yPos, speed, rotation, 200, 1);
-        var path = "assets/images/Asteroid-Large-" + spriteNo.toString() + ".png";
-        this.asteroids[i].setSprite(this.assetManager.getAsset(path));*/
         var x = randomRange(100, window.innerWidth - 100);
         var y = randomRange(100, window.innerHeight - 100);
         var rotation = randomRange(0, Math.PI * 2);
@@ -56,25 +48,6 @@ class AsteroidManager {
   }
 
   createSplit(x, y, rotation, generation) {
-    /*var size = "Medium";
-    var radius = 100;
-    if(3 === generation) {
-      size = "Small";
-      radius = 50;
-    }
-    var rotationVariation = randomRange(Math.PI / 6, Math.PI - 1);
-    var spriteNo = Math.floor(randomRange(1, 4));
-    var xPos = randomRange(0, 50) + x - 25;
-    var yPos = randomRange(0, 50) + y - 25;
-    var speed = randomRange(this.minSpeed, this.maxSpeed);
-    var leftRotation = rotation - rotationVariation;
-    var rightRotation = rotation + rotationVariation;
-    var leftAsteroid = new Asteroid(xPos, yPos, speed, leftRotation, radius, generation);
-    var rightAsteroid = new Asteroid(xPos, yPos, speed, rightRotation, radius, generation);
-    leftAsteroid.setSprite(this.assetManager.getAsset("assets/images/Asteroid-" + size + "-" + spriteNo.toString() + ".png"));
-    rightAsteroid.setSprite(this.assetManager.getAsset("assets/images/Asteroid-" + size + "-" + spriteNo.toString() + ".png"));
-    this.asteroids.push(leftAsteroid);
-    this.asteroids.push(rightAsteroid);*/
     var x = randomRange(0, 50) + x - 25;
     var y = randomRange(0, 50) + y - 25;
     var rotationVariation = randomRange(Math.PI / 6, Math.PI - 1);
