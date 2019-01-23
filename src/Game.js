@@ -14,12 +14,18 @@ class Game {
 
     this.AssetManager = new AssetManager("assets/jsonAssets.json");           //Creates asset manager.
     this.AssetManager.queueDownloadImage('assets/images/PlayerShip.png');     //Adds path to download Queue
+    this.AssetManager.queueDownloadImage('assets/images/Alien.png');    
     this.AssetManager.downloadAllImages(() => {
       this.player = new Player(100,100,50);
       this.player.setSprite(this.AssetManager.getAsset('assets/images/PlayerShip.png'));
+
+      this.Ai = new Alien();
+      this.Ai.setImage(this.AssetManager.getAsset('assets/images/Alien.png'));
+
       console.log("Loaded complete");
       this.gameLoaded = true;
     });                                                                       //Downloads all Images, When complete inside of function executes.
+
 
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
@@ -36,6 +42,7 @@ class Game {
   update() {
 
     if(this.gameLoaded){
+      this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.update();
       this.player.isThrusting = this.keyboardManager["KeyW"];
       if(this.keyboardManager["KeyD"]){
@@ -67,6 +74,7 @@ class Game {
 
     ctx.clearRect(0, 0, canv.width, canv.height);
     this.player.draw(ctx);
+    this.Ai.draw(ctx);
 
   }
 }
