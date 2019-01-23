@@ -64,12 +64,19 @@ class AsteroidManager {
     }
     else {
       for(var i = 0; i < this.asteroids.length; i++) {
-        if(!this.asteroids[i].alive ) {
-          var asteroidGeneration =  this.asteroids[i].generation;
-          if(this.maxGeneration !== asteroidGeneration) {
-            this.createSplit(this.asteroids[i].xPos, this.asteroids[i].yPos, this.asteroids[i].rotation, asteroidGeneration + 1)
+
+        if(!this.asteroids[i].alive) {
+          if(!this.asteroids[i].split){
+            var asteroidGeneration = this.asteroids[i].generation;
+            if(this.maxGeneration !== asteroidGeneration) {
+              this.createSplit(this.asteroids[i].xPos, this.asteroids[i].yPos, this.asteroids[i].rotation, asteroidGeneration + 1)
+            }
+            this.asteroids[i].split = true;
+            this.asteroids[i].emissionComplete = true
           }
-          this.asteroids.splice(i, 1); // Remove dead asteroids
+          if(this.asteroids[i].emissionComplete) {
+            this.asteroids.splice(i, 1); // Remove dead asteroids
+          }
         }
         else {
           this.asteroids[i].update();
