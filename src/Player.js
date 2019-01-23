@@ -136,7 +136,7 @@ class Player{
     ctx.restore();
 
     // Collision Triangle
-    ctx.beginPath();
+    /*ctx.beginPath();
     ctx.lineTo(this.triangle[0].x, this.triangle[0].y);
     ctx.lineTo(this.triangle[1].x, this.triangle[1].y);
     ctx.lineTo(this.triangle[2].x, this.triangle[2].y);
@@ -145,7 +145,7 @@ class Player{
     ctx.strokeStyle = "Red";
     ctx.stroke();
     ctx.fillStyle = "#FF000034";
-    ctx.fill();
+    ctx.fill();*/
 
     // Draw Shield
     if(this.shielded){
@@ -165,5 +165,13 @@ class Player{
     {
       this.bullets[x].draw(ctx);
     }
+  }
+
+  reset() {
+    this.positionX = window.innerWidth / 2;
+    this.positionY = window.innerHeight / 2;
+    this.isThrusting = false;
+    this.velocityX = 0;
+    this.velocityY = 0;
   }
 }

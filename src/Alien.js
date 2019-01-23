@@ -113,4 +113,7 @@ class Alien {
          }
      }
 
+     die() {
+         
+     }
 }
