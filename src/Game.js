@@ -123,6 +123,9 @@ class Game {
     this.asteroidManager.draw(ctx);
   }
 
+  /**
+   * Initialises the game menus
+   */
   initMenus() {
     let canvas = document.getElementById("canvas");
     let mainDiv = document.createElement('div');
