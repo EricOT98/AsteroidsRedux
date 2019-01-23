@@ -136,7 +136,11 @@ class Player{
     ctx.restore();
 
     // Collision Triangle
+<<<<<<< HEAD
     /*ctx.beginPath();
+=======
+    ctx.beginPath();
+>>>>>>> 5d1ce9e272c34abfad8a93f349b64dcda09e60be
     ctx.lineTo(this.triangle[0].x, this.triangle[0].y);
     ctx.lineTo(this.triangle[1].x, this.triangle[1].y);
     ctx.lineTo(this.triangle[2].x, this.triangle[2].y);
@@ -165,6 +169,7 @@ class Player{
     {
       this.bullets[x].draw(ctx);
     }
+<<<<<<< HEAD
   }
 
   reset() {
@@ -173,5 +178,7 @@ class Player{
     this.isThrusting = false;
     this.velocityX = 0;
     this.velocityY = 0;
+=======
+>>>>>>> 5d1ce9e272c34abfad8a93f349b64dcda09e60be
   }
 }
