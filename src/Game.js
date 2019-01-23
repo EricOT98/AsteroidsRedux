@@ -31,17 +31,21 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/Alien-1.png');
 
     this.AssetManager.downloadAllImages(() => {
-      this.player = new Player(100,100,50);
-      this.player.setSprite(this.AssetManager.getAsset('assets/images/PlayerShip.png'));
 
+      // Player
+      this.player = new Player(100,100,50);
+      this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
+
+      // Asteroid Manager
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
 
+      // AI Alien
       this.Ai = new Alien();
       this.Ai.setImage(this.AssetManager.getAsset('assets/images/Alien-1.png'));
 
-      console.log("Loaded complete");
       this.gameLoaded = true;
-    });                                                                          // Downloads all Images, when complete inside of function executes
+      console.log("Loading Complete");
+    }); // Downloads all Images, when complete inside of function executes
 
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
@@ -76,25 +80,35 @@ class Game {
       }
 
       this.asteroidManager.update();
-      for(var i = 0; i < this.player.bullets.length; i++) {
-        if(this.player.bullets[i].alive) {
-            var bulletX = this.player.bullets[i].positionX;
-            var bulletY = this.player.bullets[i].positionY;
-            var bulletRad = this.player.bullets[i].radius;
-            for(var j = 0; j < this.asteroidManager.asteroids.length; j++){
-                var asteroidX = this.asteroidManager.asteroids[j].centreX;
-                var asteroidY = this.asteroidManager.asteroids[j].centreY;
-                var asteroidRad = this.asteroidManager.asteroids[j].radius;
-                if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad)){
-                    this.player.bullets[i].alive = false;
-                    this.asteroidManager.asteroids[j].alive = false;
-                }
-            }
-        }
-      }
+      this.handleCollisions()
       this.draw();
     }
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
+  }
+
+  /**
+   * Handle any collisions that occur in the game
+   */
+  handleCollisions(){
+    var playerBullets = this.player.bullets;
+    var asteroids = this.asteroidManager.asteroids;
+
+    // Check collisions between player bullets and asteroids
+    for(var i = 0; i < playerBullets.length; i++) {
+        var bulletX = playerBullets[i].positionX;
+        var bulletY = playerBullets[i].positionY;
+        var bulletRad = playerBullets[i].radius;
+        for(var j = 0; j < this.asteroidManager.asteroids.length; j++){
+            var asteroidX = asteroids[j].centreX;
+            var asteroidY = asteroids[j].centreY;
+            var asteroidRad = asteroids[j].radius;
+            if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad)){
+                playerBullets[i].alive = false;
+                asteroids[j].alive = false;
+            }
+        }
+    }
+
   }
 
   /**
