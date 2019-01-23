@@ -16,7 +16,6 @@ class Player{
     this.velocityX = 0;
     this.velocityY = 0;
 
-
     this.width = 100;
     this.height = 100;
 
@@ -27,11 +26,13 @@ class Player{
     this.bullets = [];
 
 
-    this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,120,0)');
+    this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
     this.emitter.setParticlesLifeTime(0.75);
     this.emitter.setEmissionRate(0);
     this.emitter.setMaxParticles(100000);
-    this.emitter.useImage("assets/images/spark.png", 5,5);
+    this.emitter.useACircle();
+    this.emitter.updateSize(3,3);
+    //this.emitter.useImage("assets/images/spark.png", 5,5);
   }
 
   setSprite(newsprite){
@@ -69,7 +70,7 @@ class Player{
 
     for(var x=0; x < this.bullets.length; x++)
     {
-      this.bullets[x].update();
+      this.bullets[x].update(width, height);
 
       if(this.bullets[x].alive === false)
       {
@@ -80,8 +81,8 @@ class Player{
     this.emitter.plotParticles(width, height);
     this.emitter.setPos((this.positionX + (this.width / 2.0) + 40.0 * Math.cos(radians)), (this.positionY + (this.height / 2.0)) + 40.0 * Math.sin(radians));
     var mag = Math.sqrt((this.velocityX * this.velocityX) + (this.velocityY * this.velocityY));
-    var newEmission = (mag / 50) * 25;
-    newEmission = newEmission < 1 ? 0 : newEmission;
+    var newEmission = (mag / 50) * 10;
+    newEmission = newEmission < 0.5 ? 0 : newEmission;
     this.emitter.setEmissionRate(newEmission);
   }
 
