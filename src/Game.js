@@ -124,11 +124,12 @@ class Game {
       var asteroidX = asteroids[i].centreX;
       var asteroidY = asteroids[i].centreY;
       var asteroidRad = asteroids[i].radius;
-      if(!this.player.shielded && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
-        console.log("Player Asteroid");
+      if(!this.player.shielded && asteroids[i].alive && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+        this.player.reset();
+        this.hud.lives -= 1;
       }
       if(checkCircleCircleCollision(this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive) {
-        console.log("Alien Asteroid");
+        this.Ai.die();
       }
       for(var j = 0; j < playerBullets.length; j++) {
         var bulletX = playerBullets[j].positionX;
@@ -137,6 +138,7 @@ class Game {
         if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
           playerBullets[j].alive = false;
           asteroids[i].destroy(this.powerups, this.player, true);
+          this.hud.updateScore(this.hud.score + 50);
         }
       }
       for(var j = 0; j < alienBullets.length; j++) {
@@ -148,6 +150,27 @@ class Game {
           asteroids[i].destroy(this.powerups, this.player, true);
         }
       }
+    }
+    for(var i = 0; i < playerBullets.length; i++) {
+      var bulletX = playerBullets[i].positionX;
+      var bulletY = playerBullets[i].positionY;
+      var bulletRad = playerBullets[i].radius;
+      if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2)) {
+        this.Ai.die();
+      }
+    }
+    for(var i = 0; i < alienBullets.length; i++) {
+      var bulletX = alienBullets[i].positionX;
+      var bulletY = alienBullets[i].positionY;
+      var bulletRad = alienBullets[i].radius;
+      if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+        this.hud.lives -= 1;
+        this.player.reset();
+      }
+    }
+    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+      this.hud.lives -= 1;
+      this.player.reset();
     }
   }
 
