@@ -75,6 +75,7 @@ class Game {
    * Updates the game
    */
   update() {
+
     if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
       this.player.update(window.innerWidth, window.innerHeight);
       //this.logoTest.update();
@@ -95,11 +96,11 @@ class Game {
       }
 
       this.asteroidManager.update();
+
       this.handleCollisions()
       for(var i =0; i< this.powerups.length; i++)
       {
         this.powerups[i].update();
-
         if(!this.powerups[i].alive){
           this.powerups.splice(i,1);
         }
@@ -145,16 +146,15 @@ class Game {
     this.player.draw(ctx);
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
+   // this.logoTest.draw(ctx);
+
+   //Draw HUD
+   this.hud.draw(ctx);
 
     for(var i =0; i< this.powerups.length; i++)
     {
       this.powerups[i].draw(ctx);
     }
-
-   // this.logoTest.draw(ctx);
-
-   //Draw HUD
-   this.hud.draw(ctx);
   }
 
   /**
