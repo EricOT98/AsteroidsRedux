@@ -156,6 +156,7 @@ class Game {
       var bulletY = playerBullets[i].positionY;
       var bulletRad = playerBullets[i].radius;
       if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2)) {
+        playerBullets[i].alive = false;
         this.Ai.die();
       }
     }
@@ -164,6 +165,7 @@ class Game {
       var bulletY = alienBullets[i].positionY;
       var bulletRad = alienBullets[i].radius;
       if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+        alienBullets[i].alive = false;
         this.hud.lives -= 1;
         this.player.reset();
       }
