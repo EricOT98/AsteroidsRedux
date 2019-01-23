@@ -16,6 +16,6 @@ class LeaderboardScene extends Scene {
     this.backBtn.makeImageButton("assets/ui/back_btn.png");
     this.backBtn.addHoverImage("assets/ui/back_btn_pressed.png");
     this.leaderboardMenu.addButton("Back", this.backBtn);
-    this.addMenu(leaderboardMenu);
+    this.addMenu(this.leaderboardMenu);
   }
 }
