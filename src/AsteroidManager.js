@@ -35,8 +35,8 @@ class AsteroidManager {
     }
     var rotationVariation = randomRange(Math.PI / 6, Math.PI - 1);
     var spriteNo = Math.floor(randomRange(1, 4));
-    var xPos = randomRange(100, window.innerWidth - 100);
-    var yPos = randomRange(100, window.innerHeight - 100);
+    var xPos = randomRange(0, 50) + x - 25;
+    var yPos = randomRange(0, 50) + y - 25;
     var speed = randomRange(this.minSpeed, this.maxSpeed);
     var rotation = randomRange(0, Math.PI * 2);
     var leftRotation = rotation - rotationVariation;
