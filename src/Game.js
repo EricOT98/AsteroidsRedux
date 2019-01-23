@@ -10,7 +10,7 @@ class Game {
    * @desc simple game constructor
    */
   constructor() {
-    var elem = document.getElementById("myLoadingText"); 
+    var elem = document.getElementById("myLoadingText");
     elem.innerHTML = "Loading";
     this.menuHandler = new MenuHandler();
     this.initMenus();
@@ -42,7 +42,7 @@ class Game {
       // Player
       this.player = new Player(100,100,50);
       this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
-
+      this.powerups = [];
       // Asteroid Manager
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
 
@@ -50,7 +50,7 @@ class Game {
       this.Ai = new Alien();
       this.Ai.setImage(this.AssetManager.getAsset('assets/images/Alien-1.png'));
 
-     // this.logoTest = new Logo(this.AssetManager.getAsset('assets/images/asteroid_logo.png'), 
+     // this.logoTest = new Logo(this.AssetManager.getAsset('assets/images/asteroid_logo.png'),
                         //this.AssetManager.getAsset('assets/images/asteroid_logo_1.png'),
                         //this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
                         //this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
@@ -65,6 +65,7 @@ class Game {
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
+
   }
 
   init() {
@@ -74,31 +75,38 @@ class Game {
    * Updates the game
    */
   update() {
-    if(this.gameLoaded && this.menuHandler.currentScene === "Game"){
+
+    if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
       this.player.update(window.innerWidth, window.innerHeight);
       //this.logoTest.update();
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
-
-      if(this.keyboardManager["KeyD"]){
+      if (this.keyboardManager["KeyD"]) {
         this.player.turn(1);
       }
-      if(this.keyboardManager["KeyA"]){
+      if (this.keyboardManager["KeyA"]) {
         this.player.turn(-1);
       }
-      if(this.keyboardManager["Space"] && this.wasUp) {
+      if((this.keyboardManager["Space"] && this.wasUp) || (this.keyboardManager["Space"] && this.player.autoFire)) {
         this.wasUp = false;
         this.player.fire();
-      }
-      else if(!this.keyboardManager["Space"]) {
+      } else if (!this.keyboardManager["Space"]) {
         this.wasUp = true;
       }
 
       this.asteroidManager.update();
-      this.handleCollisions();
 
+      this.handleCollisions()
+      for(var i =0; i< this.powerups.length; i++)
+      {
+        this.powerups[i].update();
+        if(!this.powerups[i].alive){
+          this.powerups.splice(i,1);
+        }
+      }
       this.draw();
+
     }
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
   }
@@ -121,11 +129,11 @@ class Game {
             var asteroidRad = asteroids[j].radius;
             if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[j].alive){
                 playerBullets[i].alive = false;
-                asteroids[j].destroy();
+                asteroids[j].destroy(this.powerups, this.player, false);
             }
         }
-    }
-
+      }
+    //console.log(circleTriangle(this.center, this._radius, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]));
   }
 
   /**
@@ -142,6 +150,11 @@ class Game {
 
    //Draw HUD
    this.hud.draw(ctx);
+
+    for(var i =0; i< this.powerups.length; i++)
+    {
+      this.powerups[i].draw(ctx);
+    }
   }
 
   /**
@@ -158,10 +171,10 @@ class Game {
 
     let mainMenuScene = new Scene("Main Menu", mainDiv,
         {'x': 0,'y': 0, 'width': 100, 'height': 100}
-        );
+    );
     let mainMenu = new Menu("Main Menu",
         {'x': 20, 'y': 20, 'width': 60, 'height': 60}
-        );
+    );
     let playBtn = new Button("Play",
         this.menuHandler.goToScene.bind(this.menuHandler, "Game"),
         {'x': 35, 'y': 50, 'width': 30, 'height': 10},

@@ -74,8 +74,24 @@ class Asteroid {
     this.sprite = newSprite;
   }
 
-  destroy() {
+  destroy(powerups, player, classic) {
       this.emitter.setPos(this.centreX,this.centreY);
       this.alive = false;
+
+      if(this.generation === 3 && classic === true){
+        var random = Math.floor((Math.random() * 20) + 1);
+        if(random == 5)
+        {
+          var random2 = Math.floor((Math.random() * 10) + 1);
+          if(random2 <= 5)
+          {
+            powerups.push(new PowerUp(this.centreX,this.centreY,"shoot",player));
+          }
+          else {
+            powerups.push(new PowerUp(this.centreX,this.centreY,"shield",player));
+          }
+
+        }
+      }
   }
 }
