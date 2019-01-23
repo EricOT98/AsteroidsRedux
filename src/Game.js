@@ -12,28 +12,41 @@ class Game {
   constructor() {
     this.menuHandler = new MenuHandler();
     this.initMenus();
-    this.gameLoaded = false; //Bool for checking when game is fully loaded.
+    this.gameLoaded = false; // Bool for checking when game is fully loaded.
+    this.AssetManager = new AssetManager("assets/jsonAssets.json"); // Creates asset manager
 
-    this.AssetManager = new AssetManager("assets/jsonAssets.json");           //Creates asset manager.
-    this.AssetManager.queueDownloadImage('assets/images/PlayerShip.png');     //Adds path to download Queue
+    // Asset List
+    this.AssetManager.queueDownloadImage('assets/images/PlayerShip.png'); // Adds path to download queue
+    this.AssetManager.queueDownloadImage('assets/images/spark.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Large-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Large-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Large-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Medium-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Medium-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Medium-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Small-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Small-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Asteroid-Small-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Ship-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Alien-1.png');
+
     this.AssetManager.downloadAllImages(() => {
       this.player = new Player(100,100,50);
-      this.player.setSprite(this.AssetManager.getAsset('assets/images/PlayerShip.png'));
+      this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
+      this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
       console.log("Loaded complete");
       this.gameLoaded = true;
-    });                                                                       //Downloads all Images, When complete inside of function executes.
-
+    }); // Downloads all Images, when complete inside of function executes
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
-
   }
 
   init() {
   }
 
   /**
-   * updates the game
+   * Updates the game
    */
   update() {
 
@@ -53,20 +66,37 @@ class Game {
       else if(!this.keyboardManager["Space"]) {
         this.wasUp = true;
       }
-
+      this.asteroidManager.update();
+      for(var i = 0; i < this.player.bullets.length; i++) {
+        if(this.player.bullets[i].alive) {
+            var bulletX = this.player.bullets[i].positionX;
+            var bulletY = this.player.bullets[i].positionY;
+            var bulletRad = this.player.bullets[i].radius;
+            for(var j = 0; j < this.asteroidManager.asteroids.length; j++){
+                var asteroidX = this.asteroidManager.asteroids[j].centreX;
+                var asteroidY = this.asteroidManager.asteroids[j].centreY;
+                var asteroidRad = this.asteroidManager.asteroids[j].radius;
+                if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad)){
+                    this.player.bullets[i].alive = false;
+                    this.asteroidManager.asteroids[j].alive = false;
+                }
+            }
+        }
+      }
       this.draw();
     }
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
   }
 
   /**
-   * draws the game
+   * Draws the game
    */
   draw() {
     var canv = document.getElementById("canvas");
     var ctx = canv.getContext("2d");
     ctx.clearRect(0, 0, canv.width, canv.height);
     this.player.draw(ctx);
+    this.asteroidManager.draw(ctx);
   }
 
   initMenus() {
