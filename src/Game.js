@@ -55,10 +55,13 @@ class Game {
                         //this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
                         //this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
 
+
+     // HUD
+      this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
+
       this.gameLoaded = true;
       console.log("Loading Complete");
     }); // Downloads all Images, when complete inside of function executes
-
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
@@ -71,7 +74,6 @@ class Game {
    * Updates the game
    */
   update() {
-
     if(this.gameLoaded && this.menuHandler.currentScene === "Game"){
       this.player.update(window.innerWidth, window.innerHeight);
       //this.logoTest.update();
@@ -94,7 +96,8 @@ class Game {
       }
 
       this.asteroidManager.update();
-      this.handleCollisions()
+      this.handleCollisions();
+
       this.draw();
     }
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
@@ -136,6 +139,9 @@ class Game {
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
    // this.logoTest.draw(ctx);
+
+   //Draw HUD
+   this.hud.draw(ctx);
   }
 
   /**
