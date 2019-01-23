@@ -55,10 +55,13 @@ class Game {
                         //this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
                         //this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
 
+
+     // HUD
+      this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
+
       this.gameLoaded = true;
       console.log("Loading Complete");
     }); // Downloads all Images, when complete inside of function executes
-
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
@@ -148,6 +151,10 @@ class Game {
       this.powerups[i].draw(ctx);
     }
 
+   // this.logoTest.draw(ctx);
+
+   //Draw HUD
+   this.hud.draw(ctx);
   }
 
   /**
