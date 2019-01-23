@@ -8,6 +8,9 @@ class Player{
     this.positionY = y;
     this.radius = radius || 100;
 
+    this.centreX = this.positionX + this.radius;
+    this.centreY = this.positionY + this.radius;
+
     this.isThrusting = false;
     this.thrust = 0.1;
     this.turnSpeed = 0.1;
@@ -32,6 +35,13 @@ class Player{
     this.emitter.setMaxParticles(100000);
     this.emitter.useACircle();
     this.emitter.updateSize(3,3);
+
+
+    this.shielded = false;
+    this.autoFire = false;
+
+    this.shieldTime=0;
+    this.autoTime=0;
   }
 
   setSprite(newsprite){
@@ -67,6 +77,9 @@ class Player{
     this.py = this.positionY - this.pointLength * Math.sin(radians);
     //console.log(this.positionX, this.positionY);
 
+    this.centreX = this.positionX + this.radius;
+    this.centreY = this.positionY + this.radius;
+
     for(var x=0; x < this.bullets.length; x++)
     {
       this.bullets[x].update(width, height);
@@ -83,6 +96,22 @@ class Player{
     var newEmission = (mag / 50) * 10;
     newEmission = newEmission < 0.5 ? 0 : newEmission;
     this.emitter.setEmissionRate(newEmission);
+
+
+    if(this.shielded){
+      this.shieldTime+=1;
+
+      if(this.shieldTime > 15 * 60){
+        this.shielded=false;
+      }
+    }
+    if(this.autoFire){
+      this.autoTime+=1;
+
+      if(this.autoTime > 2 * 60){
+        this.autoFire=false;
+      }
+    }
   }
 
   draw(ctx)
@@ -96,6 +125,22 @@ class Player{
    ctx.translate((this.positionX + (this.width / 2)) * -1, (this.positionY + (this.height / 2)) * -1);
    ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
    ctx.restore();
+
+
+
+   if(this.shielded){
+     ctx.save();
+     ctx.beginPath();
+     ctx.strokeStyle = 'rgb(138,43,226)';
+     ctx.fillStyle = 'rgb(138,43,226,125)';
+     ctx.globalAlpha = 0.5;
+     ctx.arc(this.centreX, this.centreY, this.radius *1.2, 0, 2 * Math.PI);
+     ctx.stroke();
+     ctx.fill();
+     ctx.restore();
+   }
+
+
 
    for(var x=0; x < this.bullets.length; x++)
    {
