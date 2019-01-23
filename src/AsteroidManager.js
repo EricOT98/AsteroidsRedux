@@ -33,7 +33,7 @@ class AsteroidManager {
       size = "Small";
       radius = 50;
     }
-    rotationVariation = randomRange(Math.PI / 6, Math.PI - 1);
+    var rotationVariation = randomRange(Math.PI / 6, Math.PI - 1);
     var spriteNo = Math.floor(randomRange(1, 4));
     var xPos = randomRange(100, window.innerWidth - 100);
     var yPos = randomRange(100, window.innerHeight - 100);
@@ -54,7 +54,7 @@ class AsteroidManager {
         if(!this.asteroids[i].alive ) {
           var asteroidGeneration =  this.asteroids[i].generation;
           if(this.maxGeneration !== asteroidGeneration) {
-            createSplit(this.asteroids[i].xPos, this.asteroids[i].yPos, this.asteroids[i].rotation, asteroidGeneration + 1)
+            this.createSplit(this.asteroids[i].xPos, this.asteroids[i].yPos, this.asteroids[i].rotation, asteroidGeneration + 1)
           }
           this.asteroids.splice(i, 1); // remove dead asteroids
         }

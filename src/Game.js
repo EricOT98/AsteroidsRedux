@@ -37,7 +37,7 @@ class Game {
       console.log("Loaded complete");
       this.gameLoaded = true;
     }); // Downloads all Images, when complete inside of function executes
-    
+
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
   }
@@ -67,6 +67,22 @@ class Game {
         this.wasUp = true;
       }
       this.asteroidManager.update();
+      for(var i = 0; i < this.player.bullets.length; i++) {
+        if(this.player.bullets[i].alive) {
+            var bulletX = this.player.bullets[i].positionX;
+            var bulletY = this.player.bullets[i].positionY;
+            var bulletRad = this.player.bullets[i].radius;
+            for(var j = 0; j < this.asteroidManager.asteroids.length; j++){
+                var asteroidX = this.asteroidManager.asteroids[j].centreX;
+                var asteroidY = this.asteroidManager.asteroids[j].centreY;
+                var asteroidRad = this.asteroidManager.asteroids[j].radius;
+                if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad)){
+                    this.player.bullets[i].alive = false;
+                    this.asteroidManager.asteroids[j].alive = false;
+                }
+            }
+        }
+      }
       this.draw();
     }
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
