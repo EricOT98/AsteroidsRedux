@@ -14,31 +14,24 @@ class Alien {
      */
     constructor () {
             this.alive = true;
-
             this.image= new Image();
-
             this.position = {"x" : 0, "y" : 0};
             this.position.x = 0;
             this.position.y = 0;
-
             this.width = 100;
             this.height = 100;
-
             this.velocity = {"x" : 0, "y" : 0};
             this.velocity.x = 0;
             this.velocity.y = 0;
-
             this.speed = 6;
             this.fireRate = 240;
             this.difficulty = 0;
-
             this.clock = 0;
-
             this.spawn();
-
             this.bullets = [];
             this.angle = 0;
-
+            this.centreX = 0;
+            this.centreY = 0;
        }
 
     spawn() {
@@ -71,7 +64,8 @@ class Alien {
     update(playerPosx, playerPosy) {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
-
+        this.centreX = this.position.x + this.width / 2;
+        this.centreY = this.position.y + this.height / 2;
         this.checkWrap();
 
         if(this.clock > this.fireRate) {
