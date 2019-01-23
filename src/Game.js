@@ -10,10 +10,13 @@ class Game {
    * @desc simple game constructor
    */
   constructor() {
+    var elem = document.getElementById("myLoadingText"); 
+    elem.innerHTML = "Loading";
     this.menuHandler = new MenuHandler();
     this.initMenus();
     this.gameLoaded = false; // Bool for checking when game is fully loaded.
     this.AssetManager = new AssetManager("assets/jsonAssets.json"); // Creates asset manager
+    this.AssetManager.LoadingBar();
 
     // Asset List
     this.AssetManager.queueDownloadImage('assets/images/PlayerShip.png'); // Adds path to download queue
@@ -29,6 +32,10 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/Asteroid-Small-3.png');
     this.AssetManager.queueDownloadImage('assets/images/Ship-1.png');
     this.AssetManager.queueDownloadImage('assets/images/Alien-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/asteroid_logo.png');
+    this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_1.png');
+    this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_2.png');
+    this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_3.png');
 
     this.AssetManager.downloadAllImages(() => {
 
@@ -42,6 +49,11 @@ class Game {
       // AI Alien
       this.Ai = new Alien();
       this.Ai.setImage(this.AssetManager.getAsset('assets/images/Alien-1.png'));
+
+     // this.logoTest = new Logo(this.AssetManager.getAsset('assets/images/asteroid_logo.png'), 
+                        //this.AssetManager.getAsset('assets/images/asteroid_logo_1.png'),
+                        //this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
+                        //this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
 
       this.gameLoaded = true;
       console.log("Loading Complete");
@@ -59,8 +71,10 @@ class Game {
    * Updates the game
    */
   update() {
+
     if(this.gameLoaded && this.menuHandler.currentScene === "Game"){
       this.player.update(window.innerWidth, window.innerHeight);
+      this.logoTest.update();
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
@@ -121,6 +135,7 @@ class Game {
     this.player.draw(ctx);
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
+   // this.logoTest.draw(ctx);
   }
 
   /**
