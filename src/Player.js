@@ -32,7 +32,6 @@ class Player{
     this.emitter.setMaxParticles(100000);
     this.emitter.useACircle();
     this.emitter.updateSize(3,3);
-    //this.emitter.useImage("assets/images/spark.png", 5,5);
   }
 
   setSprite(newsprite){
