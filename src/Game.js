@@ -74,7 +74,7 @@ class Game {
 
     if(this.gameLoaded && this.menuHandler.currentScene === "Game"){
       this.player.update(window.innerWidth, window.innerHeight);
-      this.logoTest.update();
+      //this.logoTest.update();
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
