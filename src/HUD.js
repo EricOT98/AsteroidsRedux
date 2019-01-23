@@ -28,11 +28,9 @@ class HUD {
         this.life2X = 175;
         this.life2Y = 125;
 
-
         this.life3 = new Image();
         this.life3X = 300;
         this.life3Y = 125;
-
 
         this.life1 = livesImage;
         this.life2 = livesImage;
@@ -45,7 +43,7 @@ class HUD {
      */
     draw(ctx) {
         ctx.font = "100px Hyperspace";
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "white";
         ctx.textAlign = "left";
         ctx.fillText("Score: " + this.score, this.UIX, this.UIY); 
     
