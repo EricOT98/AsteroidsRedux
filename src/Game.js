@@ -116,24 +116,64 @@ class Game {
    */
   handleCollisions(){
     var playerBullets = this.player.bullets;
+    var alienBullets = this.Ai.bullets;
     var asteroids = this.asteroidManager.asteroids;
 
-    // Check collisions between player bullets and asteroids
-    for(var i = 0; i < playerBullets.length; i++) {
-        var bulletX = playerBullets[i].positionX;
-        var bulletY = playerBullets[i].positionY;
-        var bulletRad = playerBullets[i].radius;
-        for(var j = 0; j < this.asteroidManager.asteroids.length; j++){
-            var asteroidX = asteroids[j].centreX;
-            var asteroidY = asteroids[j].centreY;
-            var asteroidRad = asteroids[j].radius;
-            if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[j].alive){
-                playerBullets[i].alive = false;
-                asteroids[j].destroy(this.powerups, this.player, false);
-            }
+    // Check collisions between player, bullets and asteroids
+    for(var i = 0; i < asteroids.length; i++) {
+      var asteroidX = asteroids[i].centreX;
+      var asteroidY = asteroids[i].centreY;
+      var asteroidRad = asteroids[i].radius;
+      if(!this.player.shielded && asteroids[i].alive && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+        this.player.reset();
+        this.hud.lives -= 1;
+      }
+      if(checkCircleCircleCollision(this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive) {
+        this.Ai.die();
+      }
+      for(var j = 0; j < playerBullets.length; j++) {
+        var bulletX = playerBullets[j].positionX;
+        var bulletY = playerBullets[j].positionY;
+        var bulletRad = playerBullets[j].radius;
+        if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
+          playerBullets[j].alive = false;
+          asteroids[i].destroy(this.powerups, this.player, true);
+          this.hud.updateScore(this.hud.score + 50);
         }
       }
-    //console.log(circleTriangle(this.center, this._radius, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]));
+      for(var j = 0; j < alienBullets.length; j++) {
+        var bulletX = alienBullets[j].positionX;
+        var bulletY = alienBullets[j].positionY;
+        var bulletRad = alienBullets[j].radius;
+        if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
+          alienBullets[j].alive = false;
+          asteroids[i].destroy(this.powerups, this.player, true);
+        }
+      }
+    }
+    for(var i = 0; i < playerBullets.length; i++) {
+      var bulletX = playerBullets[i].positionX;
+      var bulletY = playerBullets[i].positionY;
+      var bulletRad = playerBullets[i].radius;
+      if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2)) {
+        playerBullets[i].alive = false;
+        this.Ai.die();
+      }
+    }
+    for(var i = 0; i < alienBullets.length; i++) {
+      var bulletX = alienBullets[i].positionX;
+      var bulletY = alienBullets[i].positionY;
+      var bulletRad = alienBullets[i].radius;
+      if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+        alienBullets[i].alive = false;
+        this.hud.lives -= 1;
+        this.player.reset();
+      }
+    }
+    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+      this.hud.lives -= 1;
+      this.player.reset();
+    }
   }
 
   /**
