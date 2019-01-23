@@ -36,10 +36,10 @@ button:after {
   #myBar {
     width: 0;
     height: 30px;
-    background-color: orange;
+    background-color: white;
     text-align: center; /* To center it horizontally (if you want) */
     line-height: 30px; /* To center it vertically */
-    color: white; 
+    color: black; 
     position: relative;
 }
 
