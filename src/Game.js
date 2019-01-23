@@ -32,7 +32,7 @@ class Game {
 
     this.AssetManager.downloadAllImages(() => {
       this.player = new Player(100,100,50);
-      this.player.setSprite(this.AssetManager.getAsset('assets/images/PlayerShip.png'));
+      this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
 
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
 
