@@ -72,25 +72,22 @@ class Game {
    * Updates the game
    */
   update() {
-
-    if(this.gameLoaded && this.menuHandler.currentScene === "Game"){
+    if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
       this.player.update(window.innerWidth, window.innerHeight);
       //this.logoTest.update();
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
-
-      if(this.keyboardManager["KeyD"]){
+      if (this.keyboardManager["KeyD"]) {
         this.player.turn(1);
       }
-      if(this.keyboardManager["KeyA"]){
+      if (this.keyboardManager["KeyA"]) {
         this.player.turn(-1);
       }
       if((this.keyboardManager["Space"] && this.wasUp) || (this.keyboardManager["Space"] && this.player.autoFire)) {
         this.wasUp = false;
         this.player.fire();
-      }
-      else if(!this.keyboardManager["Space"]) {
+      } else if (!this.keyboardManager["Space"]) {
         this.wasUp = true;
       }
 
@@ -104,7 +101,6 @@ class Game {
           this.powerups.splice(i,1);
         }
       }
-
       this.draw();
 
     }
@@ -132,8 +128,8 @@ class Game {
                 asteroids[j].destroy(this.powerups, this.player, false);
             }
         }
-    }
-
+      }
+    //console.log(circleTriangle(this.center, this._radius, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]));
   }
 
   /**
@@ -168,10 +164,10 @@ class Game {
 
     let mainMenuScene = new Scene("Main Menu", mainDiv,
         {'x': 0,'y': 0, 'width': 100, 'height': 100}
-        );
+    );
     let mainMenu = new Menu("Main Menu",
         {'x': 20, 'y': 20, 'width': 60, 'height': 60}
-        );
+    );
     let playBtn = new Button("Play",
         this.menuHandler.goToScene.bind(this.menuHandler, "Game"),
         {'x': 35, 'y': 50, 'width': 30, 'height': 10},
