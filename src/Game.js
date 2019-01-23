@@ -10,10 +10,13 @@ class Game {
    * @desc simple game constructor
    */
   constructor() {
+    var elem = document.getElementById("myLoadingText");
+    elem.innerHTML = "Loading";
     this.menuHandler = new MenuHandler();
     this.initMenus();
     this.gameLoaded = false; // Bool for checking when game is fully loaded.
     this.AssetManager = new AssetManager("assets/jsonAssets.json"); // Creates asset manager
+    this.AssetManager.LoadingBar();
 
     // Asset List
     this.AssetManager.queueDownloadImage('assets/images/PlayerShip.png'); // Adds path to download queue
@@ -29,18 +32,28 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/Asteroid-Small-3.png');
     this.AssetManager.queueDownloadImage('assets/images/Ship-1.png');
     this.AssetManager.queueDownloadImage('assets/images/Alien-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/asteroid_logo.png');
+    this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_1.png');
+    this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_2.png');
+    this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_3.png');
 
     this.AssetManager.downloadAllImages(() => {
 
       // Player
       this.player = new Player(100,100,50);
       this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
+      this.powerups = [];
       // Asteroid Manager
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
 
       // AI Alien
       this.Ai = new Alien();
       this.Ai.setImage(this.AssetManager.getAsset('assets/images/Alien-1.png'));
+
+     // this.logoTest = new Logo(this.AssetManager.getAsset('assets/images/asteroid_logo.png'),
+                        //this.AssetManager.getAsset('assets/images/asteroid_logo_1.png'),
+                        //this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
+                        //this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
 
       this.gameLoaded = true;
       console.log("Loading Complete");
@@ -49,6 +62,7 @@ class Game {
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
+
   }
 
   init() {
@@ -60,6 +74,7 @@ class Game {
   update() {
     if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
       this.player.update(window.innerWidth, window.innerHeight);
+      //this.logoTest.update();
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
@@ -69,7 +84,7 @@ class Game {
       if (this.keyboardManager["KeyA"]) {
         this.player.turn(-1);
       }
-      if (this.keyboardManager["Space"] && this.wasUp) {
+      if((this.keyboardManager["Space"] && this.wasUp) || (this.keyboardManager["Space"] && this.player.autoFire)) {
         this.wasUp = false;
         this.player.fire();
       } else if (!this.keyboardManager["Space"]) {
@@ -77,8 +92,17 @@ class Game {
       }
 
       this.asteroidManager.update();
-      this.handleCollisions();
+      this.handleCollisions()
+      for(var i =0; i< this.powerups.length; i++)
+      {
+        this.powerups[i].update();
+
+        if(!this.powerups[i].alive){
+          this.powerups.splice(i,1);
+        }
+      }
       this.draw();
+
     }
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
   }
@@ -92,16 +116,17 @@ class Game {
 
     // Check collisions between player bullets and asteroids
     for(var i = 0; i < playerBullets.length; i++) {
-      var bulletX = playerBullets[i].positionX;
-      var bulletY = playerBullets[i].positionY;
-      var bulletRad = playerBullets[i].radius;
-      for(var j = 0; j < this.asteroidManager.asteroids.length; j++){
-        var asteroidX = asteroids[j].centreX;
-        var asteroidY = asteroids[j].centreY;
-        var asteroidRad = asteroids[j].radius;
-        if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[j].alive){
-          playerBullets[i].alive = false;
-          asteroids[j].destroy();
+        var bulletX = playerBullets[i].positionX;
+        var bulletY = playerBullets[i].positionY;
+        var bulletRad = playerBullets[i].radius;
+        for(var j = 0; j < this.asteroidManager.asteroids.length; j++){
+            var asteroidX = asteroids[j].centreX;
+            var asteroidY = asteroids[j].centreY;
+            var asteroidRad = asteroids[j].radius;
+            if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[j].alive){
+                playerBullets[i].alive = false;
+                asteroids[j].destroy(this.powerups, this.player, false);
+            }
         }
       }
     }
@@ -118,6 +143,12 @@ class Game {
     this.player.draw(ctx);
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
+
+    for(var i =0; i< this.powerups.length; i++)
+    {
+      this.powerups[i].draw(ctx);
+    }
+
   }
 
   /**

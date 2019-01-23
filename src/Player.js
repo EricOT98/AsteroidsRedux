@@ -8,6 +8,9 @@ class Player{
     this.positionY = y;
     this.radius = radius || 100;
 
+    this.centreX = this.positionX + this.radius;
+    this.centreY = this.positionY + this.radius;
+
     this.isThrusting = false;
     this.thrust = 0.1;
     this.turnSpeed = 0.1;
@@ -36,6 +39,11 @@ class Player{
     for(let i = 0; i < 3; ++i) {
       this.triangle.push({'x': 0, 'y': 0});
     }
+    this.shielded = false;
+    this.autoFire = false;
+
+    this.shieldTime=0;
+    this.autoTime=0;
   }
 
   setSprite(newsprite){
@@ -71,6 +79,9 @@ class Player{
     this.py = this.positionY - this.pointLength * Math.sin(radians);
     //console.log(this.positionX, this.positionY);
 
+    this.centreX = this.positionX + this.radius;
+    this.centreY = this.positionY + this.radius;
+
     for(var x=0; x < this.bullets.length; x++)
     {
       this.bullets[x].update(width, height);
@@ -89,28 +100,36 @@ class Player{
     this.emitter.setEmissionRate(newEmission);
     this.triangle[0].x = this.px + (this.width / 2);
     this.triangle[0].y = this.py + (this.height / 2);
-
-    // this.triangle[1].x = this.positionX - this.pointLength * Math.cos(radians + degreesToRadians(160));
-    // this.triangle[1].y = this.positionY - this.pointLength * Math.sin(radians + degreesToRadians(160));
-    //
-    // this.triangle[2].x = this.positionX - this.pointLength * Math.cos(radians + degreesToRadians(200));
-    // this.triangle[2].y = this.positionY - this.pointLength * Math.sin(radians + degreesToRadians(200));
     this.triangle[1].x = this.positionX + (this.width / 2.0) + 60.0 * Math.cos(radians + degreesToRadians(30));
     this.triangle[1].y = this.positionY + (this.height / 2.0) + 60.0 * Math.sin(radians + degreesToRadians(30));
     this.triangle[2].x = this.positionX + (this.width / 2.0) + 60.0 * Math.cos(radians - degreesToRadians(30));
     this.triangle[2].y = this.positionY + (this.height / 2.0) + 60.0 * Math.sin(radians - degreesToRadians(30));
 
+    if(this.shielded){
+      this.shieldTime+=1;
+
+      if(this.shieldTime > 15 * 60){
+        this.shielded=false;
+      }
+    }
+    if(this.autoFire){
+      this.autoTime+=1;
+
+      if(this.autoTime > 2 * 60){
+        this.autoFire=false;
+      }
+    }
   }
 
   draw(ctx)
   {
-   this.emitter.draw(ctx);
-   ctx.save();
-   ctx.translate(this.positionX + (this.width / 2.0), this.positionY + (this.height / 2.0));
-   ctx.rotate(this.angle);
-   ctx.translate((this.positionX + (this.width / 2)) * -1, (this.positionY + (this.height / 2)) * -1);
-   ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
-   ctx.restore();
+    this.emitter.draw(ctx);
+    ctx.save();
+    ctx.translate(this.positionX + (this.width / 2.0), this.positionY + (this.height / 2.0));
+    ctx.rotate(this.angle);
+    ctx.translate((this.positionX + (this.width / 2)) * -1, (this.positionY + (this.height / 2)) * -1);
+    ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
+    ctx.restore();
 
     ctx.beginPath();
     ctx.lineTo(this.triangle[0].x, this.triangle[0].y);
@@ -124,24 +143,36 @@ class Player{
     ctx.fillStyle = "#FF000034";
     ctx.fill();
 
-   for(var x=0; x < this.bullets.length; x++)
-   {
-     this.bullets[x].draw(ctx);
-   }
+    if(this.shielded){
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgb(138,43,226)';
+      ctx.fillStyle = 'rgb(138,43,226,125)';
+      ctx.globalAlpha = 0.5;
+      ctx.arc(this.centreX, this.centreY, this.radius *1.2, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.fill();
+      ctx.restore();
+    }
 
-   // bounds check
+    for(var x=0; x < this.bullets.length; x++)
+    {
+      this.bullets[x].draw(ctx);
+    }
 
-   if(this.positionX < this.radius - 150){
+    // bounds check
+
+    if(this.positionX < this.radius - 150){
        this.positionX = window.innerWidth + 150;
-   }
-   if(this.positionX > window.innerWidth + 150){
-       this.positionX = this.radius - 150;
-   }
-   if(this.positionY < this.radius - 150){
-       this.positionY = window.innerHeight + 150;
-   }
-   if(this.positionY > window.innerHeight + 150){
-       this.positionY = this.radius - 150;
-   }
+    }
+    if(this.positionX > window.innerWidth + 150){
+      this.positionX = this.radius - 150;
+    }
+    if(this.positionY < this.radius - 150){
+      this.positionY = window.innerHeight + 150;
+    }
+    if(this.positionY > window.innerHeight + 150){
+      this.positionY = this.radius - 150;
+    }
   }
 }
