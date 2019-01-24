@@ -66,7 +66,7 @@ class Game {
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
-
+    this.retroVersion = false;
   }
 
   init() {
@@ -229,7 +229,7 @@ class Game {
     mainDiv.appendChild(canvas);
     document.body.appendChild(mainDiv);
 
-    let mainMenuScene = new MainMenuScene(this.menuHandler);
+    let mainMenuScene = new MainMenuScene(this.menuHandler, this);
     this.menuHandler.addScene("Main Menu", mainMenuScene);
 
     let leaderboardScene = new LeaderboardScene(this.menuHandler);
@@ -237,10 +237,8 @@ class Game {
 
     let controlScene = new ControlsScene(this.menuHandler);
     this.menuHandler.addScene("Controls", controlScene);
-    let gameScene = new Scene("Game", mainDiv,
-        {'x': 0,'y': 0, 'width': 100, 'height': 100}
-    );
 
+    let gameScene = new GameScene(this.menuHandler);
     this.menuHandler.addScene("Game", gameScene);
     this.menuHandler._theme.setPrimary(0,0,0,0);
     this.menuHandler._theme.setSecondary(49, 49, 49, 0.5);
@@ -248,5 +246,32 @@ class Game {
     this.menuHandler.applyTheme();
     gameScene.colour = "rgba(0,0,0,0)";
     this.menuHandler.showOnlyCurrentScene();
+  }
+
+  redux() {
+    let retroPath = "assets/Retro/ui/";
+    let modernPath = "assets/ui/";
+    let pathToUse = "";
+    if (this.retroVersion) {
+      this.retroVersion = false;
+      pathToUse = modernPath;
+    } else {
+      this.retroVersion = true;
+      pathToUse = retroPath;
+    }
+    this.menuHandler.scenes.forEach((scene, scenekey) => {
+      scene.menus.forEach((menu, menukey) => {
+        menu.buttons.forEach((button, buttonkey) => {
+          let fileName = button._img.src;
+          let hoverFileName = button._hoverImage.src;
+          var cleanup = /["')]/g;
+          fileName = fileName.split('/').pop().replace(cleanup, '');
+          hoverFileName = hoverFileName.split('/').pop().replace(cleanup, '');
+          console.log(fileName);
+          button.makeImageButton(pathToUse + fileName);
+          button.addHoverImage(pathToUse + hoverFileName);
+        })
+      })
+    })
   }
 }
