@@ -9,14 +9,14 @@ class Obstacle {
     this.speed = speed;
     this.direction = direction;
 
-    this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
-    this.emitter.setParticlesLifeTime(2);
-    this.emitter.setEmissionRate(10);
-    this.emitter.setMaxParticles(30);
-    this.emitter.useACircle();
-    this.emitter.updateSize(3,3);
+    //this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
+    //this.emitter.setParticlesLifeTime(2);
+    //this.emitter.setEmissionRate(10);
+    //this.emitter.setMaxParticles(30);
+    //this.emitter.useACircle();
+  //  this.emitter.updateSize(3,3);
 
-    this.emitTimer=0;
+    //this.emitTimer=0;
     this.bumped = false;
     this.emissionComplete = false;
   }
@@ -29,13 +29,13 @@ class Obstacle {
     this.centerX = this.x + this.width / 2;
     this.centerY = this.y + this.height / 2;
     if (this.bumped) {
-      this.emitTimer+=1;
-      this.emitter.addNewParticles();
-      this.emitter.plotParticles(window.innerWidth, window.innerHeight);
+      //this.emitTimer+=1;
+      //this.emitter.addNewParticles();
+    //  this.emitter.plotParticles(window.innerWidth, window.innerHeight);
       //console.log(this.emitTimer)
       if(this.emitTimer >= 1 * 60){
         this.emissionComplete=true;
-        this.emitter.setEmissionRate(0);
+        //this.emitter.setEmissionRate(0);
         this.bumped = false;
         this.emitTimer = 0;
       }
@@ -47,7 +47,7 @@ class Obstacle {
     ctx.strokeStyle = "rgba(45,45,45,1)";
     ctx.fillRect(this.x, this.y, this.width, this.height);
     if (this.bumped) {
-      this.emitter.draw(ctx);
+    //  this.emitter.draw(ctx);
     }
   }
 

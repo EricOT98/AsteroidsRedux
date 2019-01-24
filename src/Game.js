@@ -108,6 +108,11 @@ class Game {
     this.wasUp = true;
     this.wasUp2 = true;
     this.useNewAssets = false;
+
+
+
+
+
   }
 
   init() {
@@ -188,6 +193,7 @@ class Game {
         }
       }
       this.obstacleManager.update();
+
       this.draw();
 
     }
