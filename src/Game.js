@@ -13,7 +13,6 @@ class Game {
     var elem = document.getElementById("myLoadingText");
     elem.innerHTML = "Loading";
     this.menuHandler = new MenuHandler();
-    this.initMenus();
 
     this.AssetManager = new AssetManager("assets/jsonAssets.json"); // Creates asset manager
     this.AssetManager.LoadingBar();
@@ -72,7 +71,14 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-2.png');
     this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-3.png');
 
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/asteroid_logo.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/asteroid_logo_1.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/asteroid_logo_2.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/asteroid_logo_3.png');
+
     this.AssetManager.queueDownloadImage('assets/Stars-Background-01.png');
+    this.AssetManager.queueDownloadImage('assets/ui/control.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/control.png');
 
 
     // Sounds List
@@ -115,7 +121,8 @@ class Game {
       this.bang = this.AssetManager.getAsset('assets/sounds/bang.wav');
       this.kill = this.AssetManager.getAsset('assets/sounds/kill.wav');
       this.click = this.AssetManager.getAsset('assets/sounds/music.wav');
-
+      this.initMenus();
+      this.redux();
     }); // Downloads all Images, when complete inside of function executes
 
     this.scoreboard = new ScoreboardManager();
@@ -124,13 +131,7 @@ class Game {
     this.scoreboard.initBoard("local");
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
-    this.wasUp2 = true;
-    this.useNewAssets = false;
-
-
-
-
-
+    this.useNewAssets = true;
   }
 
   init() {
@@ -143,9 +144,10 @@ class Game {
 
 
     if (!this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
-
       this.menuHandler.getCurrentSceneObject().transitionOut();
-
+    }
+    else if (this.menuHandler.currentScene === "Controls") {
+      this.menuHandler.getCurrentSceneObject().draw();
     }
     else if(this.menuHandler.currentScene === "Leaderboard"){
       var canv = document.getElementById("canvas");
@@ -154,7 +156,6 @@ class Game {
       this.menuHandler.getCurrentSceneObject().drawLeaderboard(ctx);
     }
     else if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
-
       var elem = document.getElementById("myProgress");
       elem.hidden = true;
 
@@ -165,7 +166,6 @@ class Game {
       var ctx = canv.getContext("2d");
       ctx.clearRect(0, 0, canv.width, canv.height);
       this.logoTest.draw(ctx);
-
     }
 
     if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Game") {
@@ -178,23 +178,15 @@ class Game {
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
-      if (this.keyboardManager["ArrowUp"] && this.wasUp2) {
-        this.wasUp2 = false;
-        this.useNewAssets = !this.useNewAssets;
-        this.player.updateAssets(this.AssetManager, this.useNewAssets);
-        this.Ai.updateAssets(this.AssetManager, this.useNewAssets);
-        this.asteroidManager.updateAssets(this.useNewAssets);
-      }else if (!this.keyboardManager["ArrowUp"]) {
-        this.wasUp2 = true;
-      }
 
+      this.player.isThrusting = this.keyboardManager["KeyW"];
       if (this.keyboardManager["KeyD"]) {
         this.player.turn(1);
       }
       if (this.keyboardManager["KeyA"]) {
         this.player.turn(-1);
       }
-      if((this.keyboardManager["Space"] && this.wasUp) || (this.keyboardManager["Space"] && this.player.autoFire)) {
+      if ((this.keyboardManager["Space"] && this.wasUp) || (this.keyboardManager["Space"] && this.player.autoFire)) {
         this.wasUp = false;
         this.player.fire();
       } else if (!this.keyboardManager["Space"]) {
@@ -214,7 +206,6 @@ class Game {
       this.obstacleManager.update();
 
       this.draw();
-
     }
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
   }
@@ -386,8 +377,9 @@ class Game {
     let leaderboardScene = new LeaderboardScene(this.menuHandler);
     this.menuHandler.addScene("Leaderboard",leaderboardScene);
 
-    let controlScene = new ControlsScene(this.menuHandler);
-    this.menuHandler.addScene("Controls", controlScene);
+    let controlScene = new ControlsScene(this.menuHandler, this.AssetManager);
+    this.controlScene = controlScene;
+    this.menuHandler.addScene("Controls", this.controlScene);
 
     let gameScene = new GameScene(this.menuHandler);
     this.menuHandler.addScene("Game", gameScene);
@@ -402,14 +394,26 @@ class Game {
   redux() {
     let retroPath = "assets/Retro/ui/";
     let modernPath = "assets/ui/";
+
+    let logoPath = "assets/images/";
+    let logoPathToUse = "";
     let pathToUse = "";
-    if (this.useNewAssets) {
-      this.useNewAssets = false;
-      pathToUse = modernPath;
-    } else {
-      this.useNewAssets = true;
-      pathToUse = retroPath;
-    }
+
+    this.useNewAssets = !this.useNewAssets;
+
+    pathToUse = this.useNewAssets ? modernPath : retroPath;
+    logoPathToUse = this.useNewAssets ? logoPath : retroPath;
+    this.player.updateAssets(this.AssetManager, this.useNewAssets);
+    this.Ai.updateAssets(this.AssetManager, this.useNewAssets);
+    this.asteroidManager.updateAssets(this.useNewAssets);
+
+    this.logoTest.ani1 = this.AssetManager.getAsset(logoPathToUse + 'asteroid_logo.png');
+    this.logoTest.ani2 = this.AssetManager.getAsset(logoPathToUse + 'asteroid_logo_1.png');
+    this.logoTest.ani3 = this.AssetManager.getAsset(logoPathToUse + 'asteroid_logo_2.png');
+    this.logoTest.ani4 = this.AssetManager.getAsset(logoPathToUse + 'asteroid_logo_3.png');
+    this.logoTest.currentImage = this.logoTest.ani1;
+
+    this.controlScene.swapScheme(pathToUse, this.AssetManager);
     this.menuHandler.scenes.forEach((scene, scenekey) => {
       scene.menus.forEach((menu, menukey) => {
         menu.buttons.forEach((button, buttonkey) => {
