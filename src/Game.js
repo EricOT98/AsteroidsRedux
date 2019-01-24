@@ -79,6 +79,8 @@ class Game {
       this.powerups = [];
       // Asteroid Manager
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
+      this.obstacleManager = new ObstacleManager();
+      this.obstacleManager.initilaiseObstacles();
 
       // AI Alien
       this.Ai = new Alien();
@@ -103,9 +105,7 @@ class Game {
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
     this.wasUp2 = true;
-
     this.useNewAssets = false;
-
   }
 
   init() {
@@ -174,7 +174,7 @@ class Game {
 
       this.asteroidManager.update();
 
-      this.handleCollisions()
+      this.handleCollisions();
       for(var i =0; i< this.powerups.length; i++)
       {
         this.powerups[i].update();
@@ -182,6 +182,7 @@ class Game {
           this.powerups.splice(i,1);
         }
       }
+      this.obstacleManager.update();
       this.draw();
 
     }
@@ -251,6 +252,49 @@ class Game {
       this.hud.lives -= 1;
       this.player.reset();
     }
+
+    for (let i = 0; i < this.obstacleManager.obstacles.length; ++i) {
+      let respValue = this.obstacleManager.checkCollisions(this.player.centreX,
+          this.player.centreY,
+          this.player.radius,
+          this.obstacleManager.obstacles[i]
+      );
+      // if (!(respValue.x !== this.player.centreX && respValue.y !== this.player.centreY)) {
+      // }
+      this.player.centreX = respValue.x;
+      this.player.centreY = respValue.y;
+
+      this.player.positionX = this.player.centreX - this.player.radius;
+      this.player.positionY = this.player.centreY  - this.player.radius;
+
+      let obsBounds = {
+        'left': this.obstacleManager.obstacles[i].x,
+        'top': this.obstacleManager.obstacles[i].y,
+        'width': this.obstacleManager.obstacles[i].width,
+        'height': this.obstacleManager.obstacles[i].height
+      };
+
+      for(let j = 0; j < playerBullets.length; j++) {
+        if (playerBullets[j].alive) {
+          let bulletX = playerBullets[j].positionX;
+          let bulletY = playerBullets[j].positionY;
+          let bulletRad = playerBullets[j].radius;
+          if (circleAABB({'x': bulletX, 'y': bulletY}, bulletRad, obsBounds)) {
+            playerBullets[j].alive = false;
+          }
+        }
+      }
+      for(let j = 0; j < alienBullets.length; j++) {
+        if (alienBullets[j].alive) {
+          let bulletX = alienBullets[j].positionX;
+          let bulletY = alienBullets[j].positionY;
+          let bulletRad = alienBullets[j].radius;
+          if (circleAABB({'x': bulletX, 'y': bulletY}, bulletRad, obsBounds)) {
+            alienBullets[j].alive = false;
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -276,6 +320,8 @@ class Game {
     {
       this.powerups[i].draw(ctx);
     }
+
+    this.obstacleManager.draw(ctx);
   }
 
   /**
