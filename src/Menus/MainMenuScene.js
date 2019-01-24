@@ -6,11 +6,12 @@ class MainMenuScene extends Scene {
         "%"
     );
     this.mainMenu = new Menu("Main Menu",
-        {'x': 20, 'y': 20, 'width': 60, 'height': 60}
+        {'x': 1120, 'y': 600, 'width': 1600, 'height': 1000},
+        "px"
     );
     this.playBtn = new Button("Play",
         menuHandler.goToScene.bind(menuHandler, "Game"),
-        {'x': 35, 'y': 50, 'width': 30, 'height': 10},
+        {'x': 35, 'y': 10, 'width': 35, 'height': 15},
         "%"
     );
 
@@ -20,7 +21,7 @@ class MainMenuScene extends Scene {
 
     this.leaderboardBtn = new Button("Leaderboard",
         menuHandler.goToScene.bind(menuHandler, "Leaderboard"),
-        {'x': 35, 'y': 65, 'width': 30, 'height': 10},
+        {'x': 35, 'y': 45, 'width': 35, 'height': 15},
         "%"
     );
 
@@ -30,7 +31,7 @@ class MainMenuScene extends Scene {
 
     this.controlsBtn = new Button("Controls",
         menuHandler.goToScene.bind(menuHandler, "Controls"),
-        {'x': 35, 'y': 80, 'width': 30, 'height': 10},
+        {'x': 35, 'y': 80, 'width': 35, 'height': 15},
         "%"
     );
 
@@ -39,6 +40,6 @@ class MainMenuScene extends Scene {
     this.mainMenu.addButton("Controls", this.controlsBtn);
 
     this.addMenu(this.mainMenu);
-    this._containerDiv.style.backgroundImage = "url('assets/tempBackground.jpg')";
+    //this._containerDiv.style.backgroundImage = "url('assets/tempBackground.jpg')";
   }
 }
