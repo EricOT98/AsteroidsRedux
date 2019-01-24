@@ -41,6 +41,8 @@ class Player{
     for(let i = 0; i < 3; ++i) {
       this.triangle.push({'x': 0, 'y': 0});
     }
+
+    this.fireSound = document.createElement("audio");
   }
 
   updateAssets(assetManager, useNewAssets){
@@ -68,15 +70,21 @@ class Player{
     this.sprite = newsprite;
   }
 
+  setSound(newsound){
+    this.fireSound = newsound;
+  }
+
   fire() {
     if(this.useNewAssets)
     {
       var bullet = new Projectile(this.px + (this.width / 2), this.py + (this.height / 2), this.angle);
       bullet.updateAssets(this.useNewAssets);
       this.bullets.push(bullet);
+      this.fireSound.play();
     }
     else{
       this.bullets.push(new Projectile(this.px + (this.width / 2), this.py + (this.height / 2), this.angle));
+      this.fireSound.play();
     }
 
   }

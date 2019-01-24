@@ -9,8 +9,10 @@ class MainMenuScene extends Scene {
         {'x': 1120, 'y': 600, 'width': 1600, 'height': 1000},
         "px"
     );
-    this.playBtn = new Button("Play",
-        menuHandler.goToScene.bind(menuHandler, "Game"),
+    this.playBtn = new Button("Play", () => {
+        game.click.play();
+        menuHandler.goToScene("Game");
+    },
         {'x': 35, 'y': 10, 'width': 35, 'height': 15},
         "%"
     );
@@ -19,8 +21,10 @@ class MainMenuScene extends Scene {
     this.playBtn.addHoverImage("assets/ui/play_btn_pressed.png");
     this.mainMenu.addButton("Play", this.playBtn);
 
-    this.leaderboardBtn = new Button("Leaderboard",
-        menuHandler.goToScene.bind(menuHandler, "Leaderboard"),
+    this.leaderboardBtn = new Button("Leaderboard",() => {
+        game.click.play();
+        menuHandler.goToScene("Leaderboard");
+    },
         {'x': 35, 'y': 45, 'width': 35, 'height': 15},
         "%"
     );
@@ -29,8 +33,10 @@ class MainMenuScene extends Scene {
     this.leaderboardBtn.addHoverImage("assets/ui/leaderboard_btn_prssed.png");
     this.mainMenu.addButton("Leaderboard", this.leaderboardBtn);
 
-    this.controlsBtn = new Button("Controls",
-        menuHandler.goToScene.bind(menuHandler, "Controls"),
+    this.controlsBtn = new Button("Controls",() => {
+        game.click.play();
+        menuHandler.goToScene("Controls");
+    },
         {'x': 35, 'y': 80, 'width': 35, 'height': 15},
         "%"
     );
@@ -40,6 +46,7 @@ class MainMenuScene extends Scene {
     this.mainMenu.addButton("Controls", this.controlsBtn);
 
     this.reduxBtn = new Button("Redux",() => {
+          game.click.play();
           game.redux();
         },
         {'x': 35, 'y': 80, 'width': 30, 'height': 10},

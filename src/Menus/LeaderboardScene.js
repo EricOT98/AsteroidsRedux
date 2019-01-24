@@ -8,8 +8,10 @@ class LeaderboardScene extends Scene {
     this.leaderboardMenu = new Menu("Leaderboard",
         {'x': 20, 'y': 20, 'width': 60, 'height': 60}
     );
-    this.backBtn = new Button("Back",
-        menuHandler.goToScene.bind(menuHandler, "Main Menu"),
+    this.backBtn = new Button("Back", () => {
+        gameNs.game.click.play();
+        menuHandler.goToScene("Main Menu");
+    },
         {'x': 35, 'y': 80, 'width': 30, 'height': 10},
         "%"
     );
