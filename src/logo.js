@@ -30,8 +30,8 @@ class Logo {
         this.ani3 = ani3Image;
         this.ani4 = ani4Image;
 
-        this.x = 1120;
-        this.y = 450;
+        this.x = (window.innerWidth / 2) - 800;
+        this.y = window.innerHeight / 10.0;
 
 
 

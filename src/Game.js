@@ -427,7 +427,9 @@ class Game {
   }
 
   reset() {
-    if(this.gameLoaded) {
+    //debugger;
+    if(this.AssetManager.loadComplete) {
+      console.log("reset");
       this.hud.score = 0;
       this.hud.lives = 3;
       this.asteroidManager.asteroids = [];

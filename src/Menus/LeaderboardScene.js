@@ -25,15 +25,15 @@ class LeaderboardScene extends Scene {
     var canv2 =  document.getElementById("canvas");
     var ctx2 = canv2.getContext("2d");
     canv2.style.visibility = "visible";
-    var xpos = 800;
-    var ypos = 400;
-    var gap = 100;
+    var xpos = (window.innerWidth / 2) - 170;
+    var ypos = window.innerHeight / 5.5;
+    var gap = 80;
 
     ctx2.fillStyle = "black";
     ctx2.fillRect(0,0, canv2.width, canv2.height);
 
     gameNs.game.scoreboard.filterScore(-1);
-    for (var i = 0; i < gameNs.game.scoreboard.scoreboard.length; i++) {
+    for (var i = 0; i < gameNs.game.scoreboard.scoreboard.length && i < 5; i++) {
       var place = i + 1;
       var player = gameNs.game.scoreboard.scoreboard[i];
       var name = player.name;
@@ -41,7 +41,7 @@ class LeaderboardScene extends Scene {
       var id = player.playerID;
 
       ctx2.fillStyle = "white";
-      ctx2.font="70px Verdana";
+      ctx2.font="50px Verdana";
       ctx2.fillText(place +") " +  name + ": " + score, xpos, ypos + ((i + 1) * gap));
       console.log(place +") " +  name + ": " + score + " : " + xpos + (ypos + ((i + 1) * gap)));
 
