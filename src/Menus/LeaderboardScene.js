@@ -17,5 +17,40 @@ class LeaderboardScene extends Scene {
     this.backBtn.addHoverImage("assets/ui/back_btn_pressed.png");
     this.leaderboardMenu.addButton("Back", this.backBtn);
     this.addMenu(this.leaderboardMenu);
-  }
+    }
+
+  drawLeaderboard(ctx) {
+    var canv2 =  document.getElementById("canvas");
+    var ctx2 = canv2.getContext("2d");
+    canv2.style.visibility = "visible";
+    var xpos = 800;
+    var ypos = 400;
+    var gap = 100;
+
+    ctx2.fillStyle = "black";
+    ctx2.fillRect(0,0, canv2.width, canv2.height);
+
+    gameNs.game.scoreboard.filterScore(-1);
+    for (var i = 0; i < gameNs.game.scoreboard.scoreboard.length; i++) {
+      var place = i + 1;
+      var player = gameNs.game.scoreboard.scoreboard[i];
+      var name = player.name;
+      var score = player.score;
+      var id = player.playerID;
+
+      ctx2.fillStyle = "white";
+      ctx2.font="70px Verdana";
+      ctx2.fillText(place +") " +  name + ": " + score, xpos, ypos + ((i + 1) * gap));
+      console.log(place +") " +  name + ": " + score + " : " + xpos + (ypos + ((i + 1) * gap)));
+
+      this.y += 50;
+      this.count += 1;
+      if(this.count === 10){
+        break;
+        }
+    }
+
+  this.count = 0;
+  this.y = 30;
+}
 }

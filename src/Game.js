@@ -64,6 +64,8 @@ class Game {
       console.log("Loading Complete");
     }); // Downloads all Images, when complete inside of function executes
 
+    this.scoreboard = new ScoreboardManager();
+
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
     this.retroVersion = false;
@@ -82,6 +84,12 @@ class Game {
       this.menuHandler.getCurrentSceneObject().transitionOut();
 
     }
+    else if(this.menuHandler.currentScene === "Leaderboard"){
+      var canv = document.getElementById("canvas");
+      var ctx = canv.getContext("2d");
+      ctx.clearRect(0, 0, canv.width, canv.height);
+      this.menuHandler.getCurrentSceneObject().drawLeaderboard(ctx);
+    }
     else if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
 
       var elem = document.getElementById("myProgress"); 
@@ -94,6 +102,8 @@ class Game {
       var ctx = canv.getContext("2d");
       ctx.clearRect(0, 0, canv.width, canv.height);
       this.logoTest.draw(ctx);
+
+      this.scoreboard.initBoard("local");
 
     }
 
