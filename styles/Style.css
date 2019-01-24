@@ -35,19 +35,21 @@ button:after {
   
   #myBar {
     width: 0;
-    height: 30px;
+    height: 300px;
     background-color: white;
+    font-size: 300px;
     text-align: center; /* To center it horizontally (if you want) */
-    line-height: 30px; /* To center it vertically */
+    line-height: 300px; /* To center it vertically */
     color: black; 
     position: relative;
 }
 
 #myLoadingText {
     width: 100%;
-    height: 30px;
+    height: 300px;
+    font-size: 300px;
     text-align: center; /* To center it horizontally (if you want) */
-    line-height: 30px; /* To center it vertically */
+    line-height: 300px; /* To center it vertically */
     color: white; 
     position: relative;
 }

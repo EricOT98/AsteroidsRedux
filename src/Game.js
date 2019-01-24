@@ -14,6 +14,7 @@ class Game {
     elem.innerHTML = "Loading";
     this.menuHandler = new MenuHandler();
     this.initMenus();
+
     this.gameLoaded = false; // Bool for checking when game is fully loaded.
     this.AssetManager = new AssetManager("assets/jsonAssets.json"); // Creates asset manager
     this.AssetManager.LoadingBar();
@@ -50,16 +51,16 @@ class Game {
       this.Ai = new Alien();
       this.Ai.setImage(this.AssetManager.getAsset('assets/images/Alien-1.png'));
 
-     // this.logoTest = new Logo(this.AssetManager.getAsset('assets/images/asteroid_logo.png'),
-                        //this.AssetManager.getAsset('assets/images/asteroid_logo_1.png'),
-                        //this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
-                        //this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
+      // Animated Logo
+      this.logoTest = new Logo(this.AssetManager.getAsset('assets/images/asteroid_logo.png'),
+                        this.AssetManager.getAsset('assets/images/asteroid_logo_1.png'),
+                        this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
+                        this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
 
 
      // HUD
       this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
 
-      this.gameLoaded = true;
       console.log("Loading Complete");
     }); // Downloads all Images, when complete inside of function executes
 
@@ -76,9 +77,28 @@ class Game {
    */
   update() {
 
+    if (!this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
+
+      this.menuHandler.getCurrentSceneObject().transitionOut();
+
+    }
+    else if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
+
+      var elem = document.getElementById("myProgress"); 
+      elem.hidden = true;
+
+      this.menuHandler.getCurrentSceneObject().transitionIn();
+      this.logoTest.update();
+
+      var canv = document.getElementById("canvas");
+      var ctx = canv.getContext("2d");
+      ctx.clearRect(0, 0, canv.width, canv.height);
+      this.logoTest.draw(ctx);
+
+    }
+
     if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
       this.player.update(window.innerWidth, window.innerHeight);
-      //this.logoTest.update();
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
@@ -186,7 +206,6 @@ class Game {
     this.player.draw(ctx);
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
-   // this.logoTest.draw(ctx);
 
    //Draw HUD
    this.hud.draw(ctx);
@@ -223,7 +242,7 @@ class Game {
     );
 
     this.menuHandler.addScene("Game", gameScene);
-    this.menuHandler._theme.setPrimary(0,0,0,1);
+    this.menuHandler._theme.setPrimary(0,0,0,0);
     this.menuHandler._theme.setSecondary(49, 49, 49, 0.5);
     this.menuHandler._theme.setTertiary(255,190,61, 0);
     this.menuHandler.applyTheme();
