@@ -141,8 +141,6 @@ class Game {
    * Updates the game
    */
   update() {
-
-
     if (!this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
       this.menuHandler.getCurrentSceneObject().transitionOut();
     }
@@ -203,7 +201,9 @@ class Game {
           this.powerups.splice(i,1);
         }
       }
-      this.obstacleManager.update();
+      if(this.useNewAssets) {
+        this.obstacleManager.update();
+      }
 
       this.draw();
     }
@@ -287,44 +287,52 @@ class Game {
       this.player.reset();
     }
 
-    for (let i = 0; i < this.obstacleManager.obstacles.length; ++i) {
-      let respValue = this.obstacleManager.checkCollisions(this.player.centreX,
-          this.player.centreY,
-          this.player.radius,
-          this.obstacleManager.obstacles[i]
-      );
-      // if (!(respValue.x !== this.player.centreX && respValue.y !== this.player.centreY)) {
-      // }
-      this.player.centreX = respValue.x;
-      this.player.centreY = respValue.y;
+    if (this.useNewAssets) {
+      for (let i = 0; i < this.obstacleManager.obstacles.length; ++i) {
+        let respValue = this.obstacleManager.checkCollisions(this.player.centreX,
+            this.player.centreY,
+            this.player.radius,
+            this.obstacleManager.obstacles[i]
+        );
+        // if (!(respValue.x !== this.player.centreX && respValue.y !== this.player.centreY)) {
+        // }
+        this.player.centreX = respValue.x;
+        this.player.centreY = respValue.y;
 
-      this.player.positionX = this.player.centreX - this.player.radius;
-      this.player.positionY = this.player.centreY  - this.player.radius;
+        this.player.positionX = this.player.centreX - this.player.radius;
+        this.player.positionY = this.player.centreY - this.player.radius;
 
-      let obsBounds = {
-        'left': this.obstacleManager.obstacles[i].x,
-        'top': this.obstacleManager.obstacles[i].y,
-        'width': this.obstacleManager.obstacles[i].width,
-        'height': this.obstacleManager.obstacles[i].height
-      };
+        let obsBounds = {
+          'left': this.obstacleManager.obstacles[i].x,
+          'top': this.obstacleManager.obstacles[i].y,
+          'width': this.obstacleManager.obstacles[i].width,
+          'height': this.obstacleManager.obstacles[i].height
+        };
 
-      for(let j = 0; j < playerBullets.length; j++) {
-        if (playerBullets[j].alive) {
-          let bulletX = playerBullets[j].positionX;
-          let bulletY = playerBullets[j].positionY;
-          let bulletRad = playerBullets[j].radius;
-          if (circleAABB({'x': bulletX, 'y': bulletY}, bulletRad, obsBounds)) {
-            playerBullets[j].alive = false;
+        for (let j = 0; j < playerBullets.length; j++) {
+          if (playerBullets[j].alive) {
+            let bulletX = playerBullets[j].positionX;
+            let bulletY = playerBullets[j].positionY;
+            let bulletRad = playerBullets[j].radius;
+            if (circleAABB({
+              'x': bulletX,
+              'y': bulletY
+            }, bulletRad, obsBounds)) {
+              playerBullets[j].alive = false;
+            }
           }
         }
-      }
-      for(let j = 0; j < alienBullets.length; j++) {
-        if (alienBullets[j].alive) {
-          let bulletX = alienBullets[j].positionX;
-          let bulletY = alienBullets[j].positionY;
-          let bulletRad = alienBullets[j].radius;
-          if (circleAABB({'x': bulletX, 'y': bulletY}, bulletRad, obsBounds)) {
-            alienBullets[j].alive = false;
+        for (let j = 0; j < alienBullets.length; j++) {
+          if (alienBullets[j].alive) {
+            let bulletX = alienBullets[j].positionX;
+            let bulletY = alienBullets[j].positionY;
+            let bulletRad = alienBullets[j].radius;
+            if (circleAABB({
+              'x': bulletX,
+              'y': bulletY
+            }, bulletRad, obsBounds)) {
+              alienBullets[j].alive = false;
+            }
           }
         }
       }
@@ -346,16 +354,15 @@ class Game {
     this.player.draw(ctx);
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
-
-   //Draw HUD
-   this.hud.draw(ctx);
+    if (this.useNewAssets) {
+      this.obstacleManager.draw(ctx);
+    }
+    this.hud.draw(ctx);
 
     for(var i =0; i< this.powerups.length; i++)
     {
       this.powerups[i].draw(ctx);
     }
-
-    this.obstacleManager.draw(ctx);
   }
 
   /**
@@ -400,6 +407,12 @@ class Game {
     let pathToUse = "";
 
     this.useNewAssets = !this.useNewAssets;
+    if (this.useNewAssets) {
+      this.menuHandler._theme.setSecondary(49, 49, 49, 0.5);
+    } else {
+      this.menuHandler._theme.setSecondary(210, 210, 210, 0.75);
+    }
+    this.menuHandler.applyTheme();
 
     pathToUse = this.useNewAssets ? modernPath : retroPath;
     logoPathToUse = this.useNewAssets ? logoPath : retroPath;

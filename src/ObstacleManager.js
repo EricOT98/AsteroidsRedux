@@ -1,7 +1,7 @@
 class ObstacleManager {
   constructor() {
     this.obstacles = [];
-    this.maxObstacles = 10;
+    this.maxObstacles = 3;
     this.minSpeed = 1;
     this.maxSpeed = 3;
 
