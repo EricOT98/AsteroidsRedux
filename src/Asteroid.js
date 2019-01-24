@@ -95,7 +95,7 @@ class Asteroid {
     this.sprite = newSprite;
   }
 
-  destroy(powerups, player, classic) {
+  destroy(powerups, pickups, player, classic, hud) {
       this.emitter.setPos(this.centreX,this.centreY);
       this.alive = false;
 
@@ -112,6 +112,14 @@ class Asteroid {
             powerups.push(new PowerUp(this.centreX,this.centreY,"shield",player));
           }
 
+        }
+        if ([6,7].includes(random)) {
+          let r2 = Math.floor((Math.random() * 20) + 1);
+          if (r2 <= 2) {
+            pickups.push(new PickUp(this.centreX, this.centreY, "Life", player, hud));
+          } else if (r2 >= 3 && r2 < 20) {
+            pickups.push(new PickUp(this.centreX, this.centreY, "Score",player,  hud));
+          }
         }
       }
   }
