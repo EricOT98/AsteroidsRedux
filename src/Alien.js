@@ -3,7 +3,7 @@
  /**
  * Alien AI class
  * @class
- * @classdesc This class manages the alien Ai which moves at a random velocity, and shoots at the player, 
+ * @classdesc This class manages the alien Ai which moves at a random velocity, and shoots at the player,
  * The aliens become harder in difficulty the longer they are alive.
  */
 class Alien {
@@ -32,10 +32,22 @@ class Alien {
             this.angle = 0;
             this.centreX = 0;
             this.centreY = 0;
+
             this.deathTimer = 0;
             this.respawnTime = 480;
+
+            this.useNewAssets = false;
        }
 
+    updateAssets(assetManager, useNewAssets){
+      this.useNewAssets = useNewAssets;
+      if(this.useNewAssets === true){
+        this.setImage(assetManager.getAsset('assets/images/enemy.png'));
+      }
+      else{
+        this.setImage(assetManager.getAsset('assets/images/Alien-1.png'));
+      }
+    }
     spawn() {
         this.alive = true;
         this.deathTimer = 0;
@@ -78,13 +90,13 @@ class Alien {
                 this.clock = 0;
             }
 
-            for(var x=0; x < this.bullets.length; x++) {
-            this.bullets[x].update();
-        
-            if(this.bullets[x].alive === false) {
-                this.bullets.splice(x, 1); //remove dead bullet
-            }
-            }
+        for(var x=0; x < this.bullets.length; x++) {
+          this.bullets[x].update();
+
+          if(this.bullets[x].alive === false) {
+            this.bullets.splice(x, 1); //remove dead bullet
+          }
+        }
 
             this.clock +=1;
         }
@@ -109,7 +121,15 @@ class Alien {
      fire(playerPosx, playerPosy) {
         this.angle = Math.atan2(this.position.y - playerPosy, this.position.x - playerPosx);
 
-        this.bullets.push(new Projectile(this.position.x + (this.width / 2), this.position.y + (this.height / 2), this.angle));
+        if(this.useNewAssets){
+          var bullet = new Projectile(this.position.x + (this.width / 2), this.position.y + (this.height / 2), this.angle);
+          bullet.updateAssets(this.useNewAssets);
+          this.bullets.push(bullet);
+        }
+        else {
+          this.bullets.push(new Projectile(this.position.x + (this.width / 2), this.position.y + (this.height / 2), this.angle));
+        }
+
      }
 
      checkWrap() {
