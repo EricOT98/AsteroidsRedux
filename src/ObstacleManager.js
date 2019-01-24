@@ -24,7 +24,7 @@ class ObstacleManager {
   }
   initilaiseObstacles() {
     if(!this.obstacles.length === 0) {
-      this.obstacles.splice(0, this.obstacles.length);
+      this.obstacles = [];
     }
     for (let i = 0; i < this.maxObstacles; ++i) {
       let x = randomRange(100, window.innerWidth + 100);
