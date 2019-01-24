@@ -79,7 +79,10 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/Stars-Background-01.png');
     this.AssetManager.queueDownloadImage('assets/ui/control.png');
     this.AssetManager.queueDownloadImage('assets/Retro/ui/control.png');
-
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn_pressed.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn_pressed.png');
 
     // Sounds List
     this.AssetManager.queueDownloadSound('assets/sounds/fire.wav');

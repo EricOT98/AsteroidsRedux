@@ -38,6 +38,7 @@ class MainMenuScene extends Scene {
     this.controlsBtn = new Button("Controls",() => {
         game.click.play();
         menuHandler.goToScene("Controls");
+        game.obstacleManager.initilaiseObstacles();
     },
         {'x': 35, 'y': 52, 'width': 35, 'height': 10},
         "%"
@@ -54,8 +55,8 @@ class MainMenuScene extends Scene {
         {'x': 35, 'y': 76, 'width': 35, 'height': 10},
         "%"
     );
-    this.reduxBtn.makeImageButton("assets/ui/back_btn.png");
-    this.reduxBtn.addHoverImage("assets/ui/back_btn_pressed.png");
+    this.reduxBtn.makeImageButton("assets/ui/redux_btn.png");
+    this.reduxBtn.addHoverImage("assets/ui/redux_btn_pressed.png");
     this.mainMenu.addButton("Redux", this.reduxBtn);
     this.addMenu(this.mainMenu);
     //this._containerDiv.style.backgroundImage = "url('assets/tempBackground.jpg')";
