@@ -4,8 +4,24 @@ class ObstacleManager {
     this.maxObstacles = 10;
     this.minSpeed = 1;
     this.maxSpeed = 3;
+
+    this.collisionEmitters = [];
   }
 
+  createCollisionEmitter(posX, posY){
+    var emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
+    emitter.setParticlesLifeTime(0.75);
+    emitter.setEmissionRate(1);
+    emitter.setMaxParticles(15);
+    emitter.useATriangle();
+    emitter.updateSize(5,5);
+    emitter.setPos(posX,posY);
+    if(this.collisionEmitters.length < 5)
+    {
+      this.collisionEmitters.push(emitter);
+    }
+
+  }
   initilaiseObstacles() {
     for (let i = 0; i < this.maxObstacles; ++i) {
       let x = randomRange(100, window.innerWidth + 100);
@@ -26,11 +42,23 @@ class ObstacleManager {
     for (let i = 0; i < this.maxObstacles; ++i) {
       this.obstacles[i].update();
     }
+
+    for(var i = 0; i< this.collisionEmitters.length; i++){
+      this.collisionEmitters[i].addNewParticles();
+      this.collisionEmitters[i].plotParticles(window.innerWidth, window.innerHeight);
+      if(this.collisionEmitters[i].emitterLifeTime/60 > 0.2 )
+      {
+        this.collisionEmitters.splice(i,1);
+      }
+    }
   }
 
   draw(ctx) {
     for (let i = 0; i < this.maxObstacles; ++i) {
       this.obstacles[i].draw(ctx);
+    }
+    for(var i = 0; i< this.collisionEmitters.length; i++){
+      this.collisionEmitters[i].draw(ctx);
     }
   }
 
@@ -67,9 +95,11 @@ class ObstacleManager {
     let distSqr =getSqrLength(p.x - cen.x, p.y - cen.y); //Will always be positive
     if (distSqr < radius * radius)
     {
-      obs.emitter.setEmissionRate(10);
+      //obs.emitter.setEmissionRate(10);
+
       obs.bumped = true;
-      obs.emitter.setPos(p.x, p.y);
+      this.createCollisionEmitter(p.x, p.y);
+    //  obs.emitter.setPos(p.x, p.y);
       let penDist = radius - Math.sqrt(distSqr);
       let penAngle = Math.atan2(p.y - cen.y, p.x - cen.x);
 
