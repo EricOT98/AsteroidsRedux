@@ -22,7 +22,6 @@ class Asteroid {
     this.emitter.setMaxParticles(30);
     this.emitter.useACircle();
     this.emitter.updateSize(3,3);
-
     this.emitTimer=0;
   }
 

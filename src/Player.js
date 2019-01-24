@@ -170,6 +170,8 @@ class Player{
   reset() {
     this.positionX = window.innerWidth / 2;
     this.positionY = window.innerHeight / 2;
+    this.centreX = this.positionX + this.radius;
+    this.centreY = this.positionY + this.radius;
     this.isThrusting = false;
     this.velocityX = 0;
     this.velocityY = 0;
