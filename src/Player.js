@@ -24,6 +24,8 @@ class Player{
     this.autoFire = false;
     this.shieldTime=0;
     this.autoTime=0;
+    this.respawnInvincibility = false;
+    this.respawnTime = 0;
 
     // Particles
     this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
@@ -155,6 +157,13 @@ class Player{
         this.autoFire=false;
       }
     }
+
+    // Respawn Control
+    if(this.respawnInvincibility) {
+      if(this.respawnTime + 5000 < new Date().getTime()) {
+        this.respawnInvincibility = false;
+      }
+    }
   }
 
   draw(ctx) {
@@ -168,7 +177,7 @@ class Player{
     ctx.drawImage(this.sprite, this.positionX, this.positionY, this.width, this.height);
     ctx.restore();
 
-    // Collision Triangle
+    // Collision Triangle (DEBUG)
     /*ctx.beginPath();
     ctx.lineTo(this.triangle[0].x, this.triangle[0].y);
     ctx.lineTo(this.triangle[1].x, this.triangle[1].y);
@@ -181,11 +190,11 @@ class Player{
     ctx.fill();*/
 
     // Draw Shield
-    if(this.shielded){
+    if(this.shielded || this.respawnInvincibility){
       ctx.save();
       ctx.beginPath();
-      ctx.strokeStyle = 'rgb(138,43,226)';
-      ctx.fillStyle = 'rgb(138,43,226,125)';
+      ctx.strokeStyle = this.shielded ? 'rgb(138,43,226)' : 'rgb(255,255,255)';
+      ctx.fillStyle = this.shielded ? 'rgb(138,43,226,125)' : 'rgb(255,255,255,55)';
       ctx.globalAlpha = 0.5;
       ctx.arc(this.centreX, this.centreY, this.radius *1.2, 0, 2 * Math.PI);
       ctx.stroke();
@@ -206,5 +215,7 @@ class Player{
     this.isThrusting = false;
     this.velocityX = 0;
     this.velocityY = 0;
+    this.respawnInvincibility = true;
+    this.respawnTime = new Date().getTime();
   }
 }
