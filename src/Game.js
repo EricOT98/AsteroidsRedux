@@ -15,7 +15,6 @@ class Game {
     this.menuHandler = new MenuHandler();
     this.initMenus();
 
-    this.gameLoaded = false; // Bool for checking when game is fully loaded.
     this.AssetManager = new AssetManager("assets/jsonAssets.json"); // Creates asset manager
     this.AssetManager.LoadingBar();
 
@@ -38,6 +37,9 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_1.png');
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_2.png');
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_3.png');
+    this.AssetManager.queueDownloadImage('assets/powerups/powerupshield.png');
+    this.AssetManager.queueDownloadImage('assets/powerups/poweruprof.png');
+
     this.AssetManager.queueDownloadImage('assets/images/enemy.png');
 
     this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Large-1.png');
@@ -71,6 +73,18 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-3.png');
 
     this.AssetManager.queueDownloadImage('assets/Stars-Background-01.png');
+
+
+    // Sounds List
+    this.AssetManager.queueDownloadSound('assets/sounds/fire.wav');
+    this.AssetManager.queueDownloadSound('assets/sounds/bang.wav');
+    this.AssetManager.queueDownloadSound('assets/sounds/kill.wav');
+    this.AssetManager.queueDownloadSound('assets/sounds/music.wav');
+
+    this.AssetManager.downloadAllSounds(() => {
+      console.log("Sounds Loaded");
+    });
+
     this.AssetManager.downloadAllImages(() => {
 
       // Player
@@ -94,10 +108,14 @@ class Game {
 
 
      // HUD
-      this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
-      this.gameLoaded = true;
-      console.log("Loading Complete");
+      this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'),  this.AssetManager.getAsset('assets/powerups/powerupshield.png'), this.AssetManager.getAsset('assets/powerups/poweruprof.png'));
+      console.log("Images Loaded");
       this.background = this.AssetManager.getAsset('assets/Stars-Background-01.png');
+      this.player.setSound(this.AssetManager.getAsset('assets/sounds/fire.wav'));
+      this.bang = this.AssetManager.getAsset('assets/sounds/bang.wav');
+      this.kill = this.AssetManager.getAsset('assets/sounds/kill.wav');
+      this.click = this.AssetManager.getAsset('assets/sounds/music.wav');
+
     }); // Downloads all Images, when complete inside of function executes
 
     this.scoreboard = new ScoreboardManager();
@@ -150,11 +168,12 @@ class Game {
 
     }
 
-    if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
+    if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Game") {
       if(this.hud.lives === 0) {
         this.scoreboard.addToBoard(this.hud.score);
         this.menuHandler.goToScene("Leaderboard");
       }
+
       this.player.update(window.innerWidth, window.innerHeight);
 
       this.Ai.update(this.player.positionX, this.player.positionY);
@@ -214,10 +233,12 @@ class Game {
       var asteroidY = asteroids[i].centreY;
       var asteroidRad = asteroids[i].radius;
       if(!this.player.shielded && !this.player.respawnInvincibility && asteroids[i].alive && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+        this.bang.play();
         this.player.reset();
         this.hud.lives -= 1;
       }
       if(checkCircleCircleCollision(this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive) {
+        this.kill.play();
         this.Ai.die();
       }
       for(var j = 0; j < playerBullets.length; j++) {
@@ -225,6 +246,7 @@ class Game {
         var bulletY = playerBullets[j].positionY;
         var bulletRad = playerBullets[j].radius;
         if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
+          this.bang.play();
           playerBullets[j].alive = false;
           asteroids[i].destroy(this.powerups, this.player, true);
           this.hud.updateScore(this.hud.score + 50);
@@ -235,6 +257,7 @@ class Game {
         var bulletY = alienBullets[j].positionY;
         var bulletRad = alienBullets[j].radius;
         if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
+          this.bang.play();
           alienBullets[j].alive = false;
           asteroids[i].destroy(this.powerups, this.player, true);
         }
@@ -244,7 +267,9 @@ class Game {
       var bulletX = playerBullets[i].positionX;
       var bulletY = playerBullets[i].positionY;
       var bulletRad = playerBullets[i].radius;
+      
       if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2) && this.Ai.alive === true) {
+        this.kill.play();
         playerBullets[i].alive = false;
         this.Ai.die();
       }
@@ -253,16 +278,20 @@ class Game {
       var bulletX = alienBullets[i].positionX;
       var bulletY = alienBullets[i].positionY;
       var bulletRad = alienBullets[i].radius;
+
       if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]) && !this.player.shielded && !this.player.respawnInvincibility) {
+        this.kill.play();
         alienBullets[i].alive = false;
         this.hud.lives -= 1;
         this.player.reset();
       }
     }
+
     if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]) 
     && this.Ai.alive === true 
     && !this.player.shielded 
     && !this.player.respawnInvincibility) {
+      this.kill.play();
       this.hud.lives -= 1;
       this.player.reset();
     }
@@ -410,4 +439,4 @@ class Game {
       this.scoreboard.initBoard("local");
     }
   }
-}a
+}
