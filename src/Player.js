@@ -33,6 +33,9 @@ class Player{
     this.emitter.useACircle();
     this.emitter.updateSize(3,3);
 
+
+    this.useNewAssets = false;
+
     // Collision Triangle
     this.triangle = [];
     for(let i = 0; i < 3; ++i) {
@@ -40,12 +43,42 @@ class Player{
     }
   }
 
+  updateAssets(assetManager, useNewAssets){
+    this.useNewAssets = useNewAssets;
+    if(this.useNewAssets === true){
+      this.setSprite(assetManager.getAsset('assets/images/player.png'));
+      this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
+      this.emitter.setParticlesLifeTime(0.75);
+      this.emitter.setEmissionRate(0);
+      this.emitter.setMaxParticles(100000);
+      this.emitter.useImage("assets/images/spark.png",5,5);
+    }
+    else {
+      this.setSprite(assetManager.getAsset('assets/images/Ship-1.png'));
+      this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
+      this.emitter.setParticlesLifeTime(0.75);
+      this.emitter.setEmissionRate(0);
+      this.emitter.setMaxParticles(100000);
+      this.emitter.useACircle();
+      this.emitter.updateSize(3,3);
+    }
+    //this.emitter.updateSize(3,3);
+  }
   setSprite(newsprite){
     this.sprite = newsprite;
   }
 
   fire() {
-    this.bullets.push(new Projectile(this.px + (this.width / 2), this.py + (this.height / 2), this.angle));
+    if(this.useNewAssets)
+    {
+      var bullet = new Projectile(this.px + (this.width / 2), this.py + (this.height / 2), this.angle);
+      bullet.updateAssets(this.useNewAssets);
+      this.bullets.push(bullet);
+    }
+    else{
+      this.bullets.push(new Projectile(this.px + (this.width / 2), this.py + (this.height / 2), this.angle));
+    }
+
   }
 
   turn(dir) {

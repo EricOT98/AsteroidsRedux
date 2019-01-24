@@ -21,6 +21,7 @@ class Game {
 
     // Asset List
     this.AssetManager.queueDownloadImage('assets/images/PlayerShip.png'); // Adds path to download queue
+    this.AssetManager.queueDownloadImage('assets/images/player.png');
     this.AssetManager.queueDownloadImage('assets/images/spark.png');
     this.AssetManager.queueDownloadImage('assets/images/Asteroid-Large-1.png');
     this.AssetManager.queueDownloadImage('assets/images/Asteroid-Large-2.png');
@@ -37,7 +38,39 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_1.png');
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_2.png');
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_3.png');
+    this.AssetManager.queueDownloadImage('assets/images/enemy.png');
 
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Large-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Large-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Large-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Medium-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Medium-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Medium-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Small-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Small-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Small-3.png');
+
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Large-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Large-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Large-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Medium-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Medium-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Medium-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Small-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Small-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Blue/Asteroid-Small-3.png');
+
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Large-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Large-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Large-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Medium-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Medium-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Medium-3.png');
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-1.png');
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-2.png');
+    this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-3.png');
+
+    this.AssetManager.queueDownloadImage('assets/Stars-Background-01.png');
     this.AssetManager.downloadAllImages(() => {
 
       // Player
@@ -64,10 +97,15 @@ class Game {
       this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
       this.gameLoaded = true;
       console.log("Loading Complete");
+      this.background = this.AssetManager.getAsset('assets/Stars-Background-01.png');
     }); // Downloads all Images, when complete inside of function executes
+
+    this.scoreboard = new ScoreboardManager();
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
+    this.wasUp2 = true;
+    this.useNewAssets = false;
   }
 
   init() {
@@ -83,9 +121,15 @@ class Game {
       this.menuHandler.getCurrentSceneObject().transitionOut();
 
     }
+    else if(this.menuHandler.currentScene === "Leaderboard"){
+      var canv = document.getElementById("canvas");
+      var ctx = canv.getContext("2d");
+      ctx.clearRect(0, 0, canv.width, canv.height);
+      this.menuHandler.getCurrentSceneObject().drawLeaderboard(ctx);
+    }
     else if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
 
-      var elem = document.getElementById("myProgress"); 
+      var elem = document.getElementById("myProgress");
       elem.hidden = true;
 
       this.menuHandler.getCurrentSceneObject().transitionIn();
@@ -96,6 +140,8 @@ class Game {
       ctx.clearRect(0, 0, canv.width, canv.height);
       this.logoTest.draw(ctx);
 
+      this.scoreboard.initBoard("local");
+
     }
 
     if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
@@ -103,6 +149,16 @@ class Game {
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
+      if (this.keyboardManager["ArrowUp"] && this.wasUp2) {
+        this.wasUp2 = false;
+        this.useNewAssets = !this.useNewAssets;
+        this.player.updateAssets(this.AssetManager, this.useNewAssets);
+        this.Ai.updateAssets(this.AssetManager, this.useNewAssets);
+        this.asteroidManager.updateAssets(this.useNewAssets);
+      }else if (!this.keyboardManager["ArrowUp"]) {
+        this.wasUp2 = true;
+      }
+
       if (this.keyboardManager["KeyD"]) {
         this.player.turn(1);
       }
@@ -248,6 +304,11 @@ class Game {
     var canv = document.getElementById("canvas");
     var ctx = canv.getContext("2d");
     ctx.clearRect(0, 0, canv.width, canv.height);
+    if(this.useNewAssets)
+    {
+      ctx.drawImage(this.background,0, 0, window.innerWidth, window.innerHeight);
+    }
+
     this.player.draw(ctx);
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
@@ -276,7 +337,7 @@ class Game {
     mainDiv.appendChild(canvas);
     document.body.appendChild(mainDiv);
 
-    let mainMenuScene = new MainMenuScene(this.menuHandler);
+    let mainMenuScene = new MainMenuScene(this.menuHandler, this);
     this.menuHandler.addScene("Main Menu", mainMenuScene);
 
     let leaderboardScene = new LeaderboardScene(this.menuHandler);
@@ -284,10 +345,8 @@ class Game {
 
     let controlScene = new ControlsScene(this.menuHandler);
     this.menuHandler.addScene("Controls", controlScene);
-    let gameScene = new Scene("Game", mainDiv,
-        {'x': 0,'y': 0, 'width': 100, 'height': 100}
-    );
 
+    let gameScene = new GameScene(this.menuHandler);
     this.menuHandler.addScene("Game", gameScene);
     this.menuHandler._theme.setPrimary(0,0,0,0);
     this.menuHandler._theme.setSecondary(49, 49, 49, 0.5);
@@ -295,5 +354,32 @@ class Game {
     this.menuHandler.applyTheme();
     gameScene.colour = "rgba(0,0,0,0)";
     this.menuHandler.showOnlyCurrentScene();
+  }
+
+  redux() {
+    let retroPath = "assets/Retro/ui/";
+    let modernPath = "assets/ui/";
+    let pathToUse = "";
+    if (this.useNewAssets) {
+      this.useNewAssets = false;
+      pathToUse = modernPath;
+    } else {
+      this.useNewAssets = true;
+      pathToUse = retroPath;
+    }
+    this.menuHandler.scenes.forEach((scene, scenekey) => {
+      scene.menus.forEach((menu, menukey) => {
+        menu.buttons.forEach((button, buttonkey) => {
+          let fileName = button._img.src;
+          let hoverFileName = button._hoverImage.src;
+          var cleanup = /["')]/g;
+          fileName = fileName.split('/').pop().replace(cleanup, '');
+          hoverFileName = hoverFileName.split('/').pop().replace(cleanup, '');
+          console.log(fileName);
+          button.makeImageButton(pathToUse + fileName);
+          button.addHoverImage(pathToUse + hoverFileName);
+        })
+      })
+    })
   }
 }

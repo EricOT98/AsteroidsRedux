@@ -23,6 +23,29 @@ class Asteroid {
     this.emitter.useACircle();
     this.emitter.updateSize(3,3);
     this.emitTimer=0;
+    this.useNewAssets = false;
+  }
+
+  updateAssets(useNewAssets){
+    this.useNewAssets = useNewAssets;
+    if(this.useNewAssets)
+    {
+      console.log("new assets");
+      this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
+      this.emitter.setParticlesLifeTime(2);
+      this.emitter.setEmissionRate(20);
+      this.emitter.setMaxParticles(60);
+      this.emitter.useImage("assets/images/pebble.png",5,5);
+    }
+    else{
+      this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
+      this.emitter.setParticlesLifeTime(2);
+      this.emitter.setEmissionRate(10);
+      this.emitter.setMaxParticles(30);
+      this.emitter.useACircle();
+      this.emitter.updateSize(3,3);
+    }
+
   }
 
   update() {
@@ -60,7 +83,6 @@ class Asteroid {
   }
 
   draw(ctx) {
-
     if(this.alive){
       ctx.drawImage(this.sprite, this.xPos, this.yPos, this.radius * 2, this.radius * 2);
     }

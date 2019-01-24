@@ -8,7 +8,7 @@ class Projectile{
     this.velocityY = 0;
 
     this.angle = angle;
-    this.radius = 5;
+    this.radius = 3.5;
     this.alive = true;
 
     this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
@@ -16,6 +16,27 @@ class Projectile{
     this.emitter.setEmissionRate(0);
     this.emitter.setMaxParticles(100000);
     this.emitter.updateSize(3,3);
+
+    this.color = 'white';
+  }
+
+  updateAssets(useNewAssets){
+    if(useNewAssets === true){
+      this.color = 'red';
+      this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(139,0,0)');
+      this.emitter.setParticlesLifeTime(0.75);
+      this.emitter.setEmissionRate(0);
+      this.emitter.setMaxParticles(100000);
+      this.emitter.updateSize(3,3);
+    }
+    else{
+      this.color = 'white';
+      this.emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
+      this.emitter.setParticlesLifeTime(0.75);
+      this.emitter.setEmissionRate(0);
+      this.emitter.setMaxParticles(100000);
+      this.emitter.updateSize(3,3);
+    }
   }
   update(width, height){
     var radians = this.angle;
@@ -40,8 +61,8 @@ class Projectile{
       this.emitter.draw(ctx);
     }
     ctx.beginPath();
-    ctx.fillStyle = "white";
-    ctx.strokeStyle= "white";
+    ctx.fillStyle = this.color;
+    ctx.strokeStyle= this.color;
     ctx.arc(this.positionX, this.positionY, this.radius, 0, 2 * Math.PI);
     ctx.stroke();
     ctx.fill();
