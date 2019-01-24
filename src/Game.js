@@ -38,11 +38,9 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_1.png');
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_2.png');
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_3.png');
-<<<<<<< HEAD
     this.AssetManager.queueDownloadImage('assets/powerups/powerupshield.png');
     this.AssetManager.queueDownloadImage('assets/powerups/poweruprof.png');
 
-=======
     this.AssetManager.queueDownloadImage('assets/images/enemy.png');
 
     this.AssetManager.queueDownloadImage('assets/images/Red/Asteroid-Large-1.png');
@@ -76,7 +74,6 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-3.png');
 
     this.AssetManager.queueDownloadImage('assets/Stars-Background-01.png');
->>>>>>> 97b763c688f4cd66a0a1cd24962c87f0cc521f99
     this.AssetManager.downloadAllImages(() => {
 
       // Player
@@ -98,12 +95,7 @@ class Game {
 
 
      // HUD
-<<<<<<< HEAD
-      this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'), this.AssetManager.getAsset('assets/powerups/powerupshield.png'), this.AssetManager.getAsset('assets/powerups/poweruprof.png'));
-
-=======
       this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
->>>>>>> 97b763c688f4cd66a0a1cd24962c87f0cc521f99
       this.gameLoaded = true;
       console.log("Loading Complete");
       this.background = this.AssetManager.getAsset('assets/Stars-Background-01.png');
