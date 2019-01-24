@@ -74,7 +74,7 @@ class Game {
     this.AssetManager.downloadAllImages(() => {
 
       // Player
-      this.player = new Player(100,100,50);
+      this.player = new Player(window.innerWidth / 2, window.innerHeight / 2, 50);
       this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
       this.powerups = [];
       // Asteroid Manager
@@ -101,7 +101,9 @@ class Game {
     }); // Downloads all Images, when complete inside of function executes
 
     this.scoreboard = new ScoreboardManager();
-
+    this.scoreboard.startTimer();
+    this.scoreboard.clearSessionStorage();
+    this.scoreboard.initBoard("local");
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
     this.wasUp2 = true;
@@ -115,6 +117,7 @@ class Game {
    * Updates the game
    */
   update() {
+
 
     if (!this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
 
@@ -140,11 +143,13 @@ class Game {
       ctx.clearRect(0, 0, canv.width, canv.height);
       this.logoTest.draw(ctx);
 
-      this.scoreboard.initBoard("local");
-
     }
 
     if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
+      if(this.hud.lives === 0) {
+        this.scoreboard.addToBoard(this.hud.score);
+        this.menuHandler.goToScene("Leaderboard");
+      }
       this.player.update(window.innerWidth, window.innerHeight);
 
       this.Ai.update(this.player.positionX, this.player.positionY);
@@ -385,4 +390,18 @@ class Game {
       })
     })
   }
-}
+
+  reset() {
+    if(this.gameLoaded) {
+      this.hud.score = 0;
+      this.hud.lives = 3;
+      this.asteroidManager.asteroids = [];
+      this.player.reset();
+      this.Ai.alive = false;
+      this.scoreboard = new ScoreboardManager();
+      this.scoreboard.startTimer();
+      this.scoreboard.clearSessionStorage();
+      this.scoreboard.initBoard("local");
+    }
+  }
+}a
