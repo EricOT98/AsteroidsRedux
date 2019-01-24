@@ -10,12 +10,31 @@ class AsteroidManager {
       this.assetManager = assetManager;
       this.asteroids = [];
       this.maxGeneration = 3;
+      this.useNewAssets = false;
       this.initialiseAsteroids();
   }
 
+  updateAssets(useNewAssets){
+    this.useNewAssets = useNewAssets;
+    this.asteroids = [];
+  }
+
   createAsteroid(x, y, rotation, gen) {
-    var spriteNo = Math.floor(randomRange(1, 4)); // 4 is exclusive in this calculation, only 1, 2 or 3 can be returned
-    var pathStart = "assets/images/Asteroid-";
+    var prepend = "";
+    if(this.useNewAssets){
+      var randNum = Math.floor(randomRange(1, 4)); // 4 is exclusive in this calculation, only 1, 2 or 3 can be returned
+      if(1 === randNum) {
+        prepend = "/Grey";
+      }
+      else if(2 === randNum) {
+        prepend = "/Red";
+      }
+      else {
+        prepend = "/Blue";
+      }
+    }
+    var spriteNo = Math.floor(randomRange(1, 4));
+    var pathStart = "assets/images" + prepend + "/Asteroid-";
     var pathEnd = "-" + spriteNo.toString() + ".png";
     var size;
     var rad;
@@ -33,6 +52,7 @@ class AsteroidManager {
     }
     var speed = randomRange(this.minSpeed, this.maxSpeed);
     var asteroid = new Asteroid(x, y, speed, rotation, rad, gen);
+    asteroid.updateAssets(this.useNewAssets);
     asteroid.setSprite(this.assetManager.getAsset(pathStart + size + pathEnd));
     this.asteroids.push(asteroid);
   }
