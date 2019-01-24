@@ -14,6 +14,7 @@ class Game {
     elem.innerHTML = "Loading";
     this.menuHandler = new MenuHandler();
     this.initMenus();
+
     this.gameLoaded = false; // Bool for checking when game is fully loaded.
     this.AssetManager = new AssetManager("assets/jsonAssets.json"); // Creates asset manager
     this.AssetManager.LoadingBar();
@@ -50,15 +51,18 @@ class Game {
       this.Ai = new Alien();
       this.Ai.setImage(this.AssetManager.getAsset('assets/images/Alien-1.png'));
 
-     // this.logoTest = new Logo(this.AssetManager.getAsset('assets/images/asteroid_logo.png'),
-                        //this.AssetManager.getAsset('assets/images/asteroid_logo_1.png'),
-                        //this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
-                        //this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
+      // Animated Logo
+      this.logoTest = new Logo(this.AssetManager.getAsset('assets/images/asteroid_logo.png'),
+                        this.AssetManager.getAsset('assets/images/asteroid_logo_1.png'),
+                        this.AssetManager.getAsset('assets/images/asteroid_logo_2.png'),
+                        this.AssetManager.getAsset('assets/images/asteroid_logo_3.png'));
 
-      this.gameLoaded = true;
+
+     // HUD
+      this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
+
       console.log("Loading Complete");
     }); // Downloads all Images, when complete inside of function executes
-
 
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
@@ -72,9 +76,29 @@ class Game {
    * Updates the game
    */
   update() {
+
+    if (!this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
+
+      this.menuHandler.getCurrentSceneObject().transitionOut();
+
+    }
+    else if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
+
+      var elem = document.getElementById("myProgress"); 
+      elem.hidden = true;
+
+      this.menuHandler.getCurrentSceneObject().transitionIn();
+      this.logoTest.update();
+
+      var canv = document.getElementById("canvas");
+      var ctx = canv.getContext("2d");
+      ctx.clearRect(0, 0, canv.width, canv.height);
+      this.logoTest.draw(ctx);
+
+    }
+
     if (this.gameLoaded && this.menuHandler.currentScene === "Game") {
       this.player.update(window.innerWidth, window.innerHeight);
-      //this.logoTest.update();
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"];
@@ -92,11 +116,11 @@ class Game {
       }
 
       this.asteroidManager.update();
+
       this.handleCollisions()
       for(var i =0; i< this.powerups.length; i++)
       {
         this.powerups[i].update();
-
         if(!this.powerups[i].alive){
           this.powerups.splice(i,1);
         }
@@ -112,24 +136,64 @@ class Game {
    */
   handleCollisions(){
     var playerBullets = this.player.bullets;
+    var alienBullets = this.Ai.bullets;
     var asteroids = this.asteroidManager.asteroids;
 
-    // Check collisions between player bullets and asteroids
-    for(var i = 0; i < playerBullets.length; i++) {
-        var bulletX = playerBullets[i].positionX;
-        var bulletY = playerBullets[i].positionY;
-        var bulletRad = playerBullets[i].radius;
-        for(var j = 0; j < this.asteroidManager.asteroids.length; j++){
-            var asteroidX = asteroids[j].centreX;
-            var asteroidY = asteroids[j].centreY;
-            var asteroidRad = asteroids[j].radius;
-            if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[j].alive){
-                playerBullets[i].alive = false;
-                asteroids[j].destroy(this.powerups, this.player, false);
-            }
+    // Check collisions between player, bullets and asteroids
+    for(var i = 0; i < asteroids.length; i++) {
+      var asteroidX = asteroids[i].centreX;
+      var asteroidY = asteroids[i].centreY;
+      var asteroidRad = asteroids[i].radius;
+      if(!this.player.shielded && asteroids[i].alive && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+        this.player.reset();
+        this.hud.lives -= 1;
+      }
+      if(checkCircleCircleCollision(this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive) {
+        this.Ai.die();
+      }
+      for(var j = 0; j < playerBullets.length; j++) {
+        var bulletX = playerBullets[j].positionX;
+        var bulletY = playerBullets[j].positionY;
+        var bulletRad = playerBullets[j].radius;
+        if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
+          playerBullets[j].alive = false;
+          asteroids[i].destroy(this.powerups, this.player, true);
+          this.hud.updateScore(this.hud.score + 50);
         }
       }
-    //console.log(circleTriangle(this.center, this._radius, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]));
+      for(var j = 0; j < alienBullets.length; j++) {
+        var bulletX = alienBullets[j].positionX;
+        var bulletY = alienBullets[j].positionY;
+        var bulletRad = alienBullets[j].radius;
+        if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
+          alienBullets[j].alive = false;
+          asteroids[i].destroy(this.powerups, this.player, true);
+        }
+      }
+    }
+    for(var i = 0; i < playerBullets.length; i++) {
+      var bulletX = playerBullets[i].positionX;
+      var bulletY = playerBullets[i].positionY;
+      var bulletRad = playerBullets[i].radius;
+      if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2)) {
+        playerBullets[i].alive = false;
+        this.Ai.die();
+      }
+    }
+    for(var i = 0; i < alienBullets.length; i++) {
+      var bulletX = alienBullets[i].positionX;
+      var bulletY = alienBullets[i].positionY;
+      var bulletRad = alienBullets[i].radius;
+      if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+        alienBullets[i].alive = false;
+        this.hud.lives -= 1;
+        this.player.reset();
+      }
+    }
+    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+      this.hud.lives -= 1;
+      this.player.reset();
+    }
   }
 
   /**
@@ -143,11 +207,13 @@ class Game {
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
 
+   //Draw HUD
+   this.hud.draw(ctx);
+
     for(var i =0; i< this.powerups.length; i++)
     {
       this.powerups[i].draw(ctx);
     }
-
   }
 
   /**
@@ -174,7 +240,7 @@ class Game {
 
     let gameScene = new GameScene(this.menuHandler);
     this.menuHandler.addScene("Game", gameScene);
-    this.menuHandler._theme.setPrimary(0,0,0,1);
+    this.menuHandler._theme.setPrimary(0,0,0,0);
     this.menuHandler._theme.setSecondary(49, 49, 49, 0.5);
     this.menuHandler._theme.setTertiary(255,190,61, 0);
     this.menuHandler.applyTheme();

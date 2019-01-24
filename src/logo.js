@@ -30,8 +30,8 @@ class Logo {
         this.ani3 = ani3Image;
         this.ani4 = ani4Image;
 
-        this.x = 150;
-        this.y = 150;
+        this.x = 1120;
+        this.y = 450;
 
 
 
