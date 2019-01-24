@@ -1,7 +1,7 @@
 class ObstacleManager {
   constructor() {
     this.obstacles = [];
-    this.maxObstacles = 10;
+    this.maxObstacles = 3;
     this.minSpeed = 1;
     this.maxSpeed = 3;
 
@@ -23,6 +23,9 @@ class ObstacleManager {
 
   }
   initilaiseObstacles() {
+    if(!this.obstacles.length === 0) {
+      this.obstacles = [];
+    }
     for (let i = 0; i < this.maxObstacles; ++i) {
       let x = randomRange(100, window.innerWidth + 100);
       let y = randomRange(100, window.innerHeight + 100);

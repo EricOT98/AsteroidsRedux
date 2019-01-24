@@ -14,7 +14,6 @@ class Game {
     var elem = document.getElementById("myLoadingText");
     elem.innerHTML = "Loading";
     this.menuHandler = new MenuHandler();
-    this.initMenus();
 
     this.AssetManager = new AssetManager("assets/jsonAssets.json"); // Creates asset manager
     this.AssetManager.LoadingBar();
@@ -73,8 +72,18 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-2.png');
     this.AssetManager.queueDownloadImage('assets/images/Grey/Asteroid-Small-3.png');
 
-    this.AssetManager.queueDownloadImage('assets/Stars-Background-01.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/asteroid_logo.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/asteroid_logo_1.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/asteroid_logo_2.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/asteroid_logo_3.png');
 
+    this.AssetManager.queueDownloadImage('assets/Stars-Background-01.png');
+    this.AssetManager.queueDownloadImage('assets/ui/control.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/control.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn_pressed.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn.png');
+    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn_pressed.png');
 
     // Sounds List
     this.AssetManager.queueDownloadSound('assets/sounds/fire.wav');
@@ -116,7 +125,8 @@ class Game {
       this.bang = this.AssetManager.getAsset('assets/sounds/bang.wav');
       this.kill = this.AssetManager.getAsset('assets/sounds/kill.wav');
       this.click = this.AssetManager.getAsset('assets/sounds/music.wav');
-
+      this.initMenus();
+      this.redux();
     }); // Downloads all Images, when complete inside of function executes
 
     this.scoreboard = new ScoreboardManager();
@@ -125,9 +135,7 @@ class Game {
     this.scoreboard.initBoard("local");
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
-    this.wasUp2 = true;
-    this.useNewAssets = false;
-
+    this.useNewAssets = true;
     var ws = new WebSocket("ws://149.153.106.151:8080/wstest");
 
     //called when the websocket is opened
@@ -153,12 +161,11 @@ class Game {
    * Updates the game
    */
   update() {
-
-
     if (!this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
-
       this.menuHandler.getCurrentSceneObject().transitionOut();
-
+    }
+    else if (this.menuHandler.currentScene === "Controls") {
+      this.menuHandler.getCurrentSceneObject().draw();
     }
     else if(this.menuHandler.currentScene === "Leaderboard"){
       var canv = document.getElementById("canvas");
@@ -167,7 +174,6 @@ class Game {
       this.menuHandler.getCurrentSceneObject().drawLeaderboard(ctx);
     }
     else if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
-
       var elem = document.getElementById("myProgress");
       elem.hidden = true;
 
@@ -178,7 +184,6 @@ class Game {
       var ctx = canv.getContext("2d");
       ctx.clearRect(0, 0, canv.width, canv.height);
       this.logoTest.draw(ctx);
-
     }
 
     if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Game") {
@@ -211,7 +216,7 @@ class Game {
       if (left) {
         this.player.turn(-1);
       }
-      if((fire && this.wasUp) || (fire && this.player.autoFire)) {
+      if ((this.keyboardManager["Space"] && this.wasUp) || (this.keyboardManager["Space"] && this.player.autoFire)) {
         this.wasUp = false;
         this.player.fire();
       } else if (!fire) {
@@ -228,10 +233,11 @@ class Game {
           this.powerups.splice(i,1);
         }
       }
-      this.obstacleManager.update();
+      if(this.useNewAssets) {
+        this.obstacleManager.update();
+      }
 
       this.draw();
-
     }
     window.requestAnimationFrame(gameNs.game.update.bind(gameNs.game));
   }
@@ -313,44 +319,52 @@ class Game {
       this.player.reset();
     }
 
-    for (let i = 0; i < this.obstacleManager.obstacles.length; ++i) {
-      let respValue = this.obstacleManager.checkCollisions(this.player.centreX,
-          this.player.centreY,
-          this.player.radius,
-          this.obstacleManager.obstacles[i]
-      );
-      // if (!(respValue.x !== this.player.centreX && respValue.y !== this.player.centreY)) {
-      // }
-      this.player.centreX = respValue.x;
-      this.player.centreY = respValue.y;
+    if (this.useNewAssets) {
+      for (let i = 0; i < this.obstacleManager.obstacles.length; ++i) {
+        let respValue = this.obstacleManager.checkCollisions(this.player.centreX,
+            this.player.centreY,
+            this.player.radius,
+            this.obstacleManager.obstacles[i]
+        );
+        // if (!(respValue.x !== this.player.centreX && respValue.y !== this.player.centreY)) {
+        // }
+        this.player.centreX = respValue.x;
+        this.player.centreY = respValue.y;
 
-      this.player.positionX = this.player.centreX - this.player.radius;
-      this.player.positionY = this.player.centreY  - this.player.radius;
+        this.player.positionX = this.player.centreX - this.player.radius;
+        this.player.positionY = this.player.centreY - this.player.radius;
 
-      let obsBounds = {
-        'left': this.obstacleManager.obstacles[i].x,
-        'top': this.obstacleManager.obstacles[i].y,
-        'width': this.obstacleManager.obstacles[i].width,
-        'height': this.obstacleManager.obstacles[i].height
-      };
+        let obsBounds = {
+          'left': this.obstacleManager.obstacles[i].x,
+          'top': this.obstacleManager.obstacles[i].y,
+          'width': this.obstacleManager.obstacles[i].width,
+          'height': this.obstacleManager.obstacles[i].height
+        };
 
-      for(let j = 0; j < playerBullets.length; j++) {
-        if (playerBullets[j].alive) {
-          let bulletX = playerBullets[j].positionX;
-          let bulletY = playerBullets[j].positionY;
-          let bulletRad = playerBullets[j].radius;
-          if (circleAABB({'x': bulletX, 'y': bulletY}, bulletRad, obsBounds)) {
-            playerBullets[j].alive = false;
+        for (let j = 0; j < playerBullets.length; j++) {
+          if (playerBullets[j].alive) {
+            let bulletX = playerBullets[j].positionX;
+            let bulletY = playerBullets[j].positionY;
+            let bulletRad = playerBullets[j].radius;
+            if (circleAABB({
+              'x': bulletX,
+              'y': bulletY
+            }, bulletRad, obsBounds)) {
+              playerBullets[j].alive = false;
+            }
           }
         }
-      }
-      for(let j = 0; j < alienBullets.length; j++) {
-        if (alienBullets[j].alive) {
-          let bulletX = alienBullets[j].positionX;
-          let bulletY = alienBullets[j].positionY;
-          let bulletRad = alienBullets[j].radius;
-          if (circleAABB({'x': bulletX, 'y': bulletY}, bulletRad, obsBounds)) {
-            alienBullets[j].alive = false;
+        for (let j = 0; j < alienBullets.length; j++) {
+          if (alienBullets[j].alive) {
+            let bulletX = alienBullets[j].positionX;
+            let bulletY = alienBullets[j].positionY;
+            let bulletRad = alienBullets[j].radius;
+            if (circleAABB({
+              'x': bulletX,
+              'y': bulletY
+            }, bulletRad, obsBounds)) {
+              alienBullets[j].alive = false;
+            }
           }
         }
       }
@@ -372,16 +386,15 @@ class Game {
     this.player.draw(ctx);
     this.Ai.draw(ctx);
     this.asteroidManager.draw(ctx);
-
-   //Draw HUD
-   this.hud.draw(ctx);
+    if (this.useNewAssets) {
+      this.obstacleManager.draw(ctx);
+    }
+    this.hud.draw(ctx);
 
     for(var i =0; i< this.powerups.length; i++)
     {
       this.powerups[i].draw(ctx);
     }
-
-    this.obstacleManager.draw(ctx);
   }
 
   /**
@@ -403,8 +416,9 @@ class Game {
     let leaderboardScene = new LeaderboardScene(this.menuHandler);
     this.menuHandler.addScene("Leaderboard",leaderboardScene);
 
-    let controlScene = new ControlsScene(this.menuHandler);
-    this.menuHandler.addScene("Controls", controlScene);
+    let controlScene = new ControlsScene(this.menuHandler, this.AssetManager);
+    this.controlScene = controlScene;
+    this.menuHandler.addScene("Controls", this.controlScene);
 
     let gameScene = new GameScene(this.menuHandler);
     this.menuHandler.addScene("Game", gameScene);
@@ -419,14 +433,32 @@ class Game {
   redux() {
     let retroPath = "assets/Retro/ui/";
     let modernPath = "assets/ui/";
+
+    let logoPath = "assets/images/";
+    let logoPathToUse = "";
     let pathToUse = "";
+
+    this.useNewAssets = !this.useNewAssets;
     if (this.useNewAssets) {
-      this.useNewAssets = false;
-      pathToUse = modernPath;
+      this.menuHandler._theme.setSecondary(49, 49, 49, 0.5);
     } else {
-      this.useNewAssets = true;
-      pathToUse = retroPath;
+      this.menuHandler._theme.setSecondary(210, 210, 210, 0.75);
     }
+    this.menuHandler.applyTheme();
+
+    pathToUse = this.useNewAssets ? modernPath : retroPath;
+    logoPathToUse = this.useNewAssets ? logoPath : retroPath;
+    this.player.updateAssets(this.AssetManager, this.useNewAssets);
+    this.Ai.updateAssets(this.AssetManager, this.useNewAssets);
+    this.asteroidManager.updateAssets(this.useNewAssets);
+
+    this.logoTest.ani1 = this.AssetManager.getAsset(logoPathToUse + 'asteroid_logo.png');
+    this.logoTest.ani2 = this.AssetManager.getAsset(logoPathToUse + 'asteroid_logo_1.png');
+    this.logoTest.ani3 = this.AssetManager.getAsset(logoPathToUse + 'asteroid_logo_2.png');
+    this.logoTest.ani4 = this.AssetManager.getAsset(logoPathToUse + 'asteroid_logo_3.png');
+    this.logoTest.currentImage = this.logoTest.ani1;
+
+    this.controlScene.swapScheme(pathToUse, this.AssetManager);
     this.menuHandler.scenes.forEach((scene, scenekey) => {
       scene.menus.forEach((menu, menukey) => {
         menu.buttons.forEach((button, buttonkey) => {
