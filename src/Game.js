@@ -88,11 +88,13 @@ class Game {
     this.AssetManager.downloadAllImages(() => {
 
       // Player
-      this.player = new Player(100,100,50);
+      this.player = new Player(window.innerWidth / 2, window.innerHeight / 2, 50);
       this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
       this.powerups = [];
       // Asteroid Manager
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
+      this.obstacleManager = new ObstacleManager();
+      this.obstacleManager.initilaiseObstacles();
 
       // AI Alien
       this.Ai = new Alien();
@@ -117,13 +119,13 @@ class Game {
     }); // Downloads all Images, when complete inside of function executes
 
     this.scoreboard = new ScoreboardManager();
-
+    this.scoreboard.startTimer();
+    this.scoreboard.clearSessionStorage();
+    this.scoreboard.initBoard("local");
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
     this.wasUp2 = true;
-
     this.useNewAssets = false;
-
   }
 
   init() {
@@ -133,6 +135,7 @@ class Game {
    * Updates the game
    */
   update() {
+
 
     if (!this.AssetManager.loadComplete && this.menuHandler.currentScene === "Main Menu") {
 
@@ -158,11 +161,14 @@ class Game {
       ctx.clearRect(0, 0, canv.width, canv.height);
       this.logoTest.draw(ctx);
 
-      this.scoreboard.initBoard("local");
-
     }
 
     if (this.AssetManager.loadComplete && this.menuHandler.currentScene === "Game") {
+      if(this.hud.lives === 0) {
+        this.scoreboard.addToBoard(this.hud.score);
+        this.menuHandler.goToScene("Leaderboard");
+      }
+
       this.player.update(window.innerWidth, window.innerHeight);
 
       this.Ai.update(this.player.positionX, this.player.positionY);
@@ -192,7 +198,7 @@ class Game {
 
       this.asteroidManager.update();
 
-      this.handleCollisions()
+      this.handleCollisions();
       for(var i =0; i< this.powerups.length; i++)
       {
         this.powerups[i].update();
@@ -200,6 +206,7 @@ class Game {
           this.powerups.splice(i,1);
         }
       }
+      this.obstacleManager.update();
       this.draw();
 
     }
@@ -219,7 +226,7 @@ class Game {
       var asteroidX = asteroids[i].centreX;
       var asteroidY = asteroids[i].centreY;
       var asteroidRad = asteroids[i].radius;
-      if(!this.player.shielded && asteroids[i].alive && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+      if(!this.player.shielded && !this.player.respawnInvincibility && asteroids[i].alive && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
         this.bang.play();
         this.player.reset();
         this.hud.lives -= 1;
@@ -254,7 +261,8 @@ class Game {
       var bulletX = playerBullets[i].positionX;
       var bulletY = playerBullets[i].positionY;
       var bulletRad = playerBullets[i].radius;
-      if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2)) {
+      
+      if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2) && this.Ai.alive === true) {
         this.kill.play();
         playerBullets[i].alive = false;
         this.Ai.die();
@@ -264,17 +272,65 @@ class Game {
       var bulletX = alienBullets[i].positionX;
       var bulletY = alienBullets[i].positionY;
       var bulletRad = alienBullets[i].radius;
-      if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+
+      if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]) && !this.player.shielded && !this.player.respawnInvincibility) {
         this.kill.play();
         alienBullets[i].alive = false;
         this.hud.lives -= 1;
         this.player.reset();
       }
     }
-    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]) && this.Ai.isAlive) {
+
+    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]) 
+    && this.Ai.alive === true 
+    && !this.player.shielded 
+    && !this.player.respawnInvincibility) {
       this.kill.play();
       this.hud.lives -= 1;
       this.player.reset();
+    }
+
+    for (let i = 0; i < this.obstacleManager.obstacles.length; ++i) {
+      let respValue = this.obstacleManager.checkCollisions(this.player.centreX,
+          this.player.centreY,
+          this.player.radius,
+          this.obstacleManager.obstacles[i]
+      );
+      // if (!(respValue.x !== this.player.centreX && respValue.y !== this.player.centreY)) {
+      // }
+      this.player.centreX = respValue.x;
+      this.player.centreY = respValue.y;
+
+      this.player.positionX = this.player.centreX - this.player.radius;
+      this.player.positionY = this.player.centreY  - this.player.radius;
+
+      let obsBounds = {
+        'left': this.obstacleManager.obstacles[i].x,
+        'top': this.obstacleManager.obstacles[i].y,
+        'width': this.obstacleManager.obstacles[i].width,
+        'height': this.obstacleManager.obstacles[i].height
+      };
+
+      for(let j = 0; j < playerBullets.length; j++) {
+        if (playerBullets[j].alive) {
+          let bulletX = playerBullets[j].positionX;
+          let bulletY = playerBullets[j].positionY;
+          let bulletRad = playerBullets[j].radius;
+          if (circleAABB({'x': bulletX, 'y': bulletY}, bulletRad, obsBounds)) {
+            playerBullets[j].alive = false;
+          }
+        }
+      }
+      for(let j = 0; j < alienBullets.length; j++) {
+        if (alienBullets[j].alive) {
+          let bulletX = alienBullets[j].positionX;
+          let bulletY = alienBullets[j].positionY;
+          let bulletRad = alienBullets[j].radius;
+          if (circleAABB({'x': bulletX, 'y': bulletY}, bulletRad, obsBounds)) {
+            alienBullets[j].alive = false;
+          }
+        }
+      }
     }
   }
 
@@ -301,6 +357,8 @@ class Game {
     {
       this.powerups[i].draw(ctx);
     }
+
+    this.obstacleManager.draw(ctx);
   }
 
   /**
@@ -360,5 +418,19 @@ class Game {
         })
       })
     })
+  }
+
+  reset() {
+    if(this.gameLoaded) {
+      this.hud.score = 0;
+      this.hud.lives = 3;
+      this.asteroidManager.asteroids = [];
+      this.player.reset();
+      this.Ai.alive = false;
+      this.scoreboard = new ScoreboardManager();
+      this.scoreboard.startTimer();
+      this.scoreboard.clearSessionStorage();
+      this.scoreboard.initBoard("local");
+    }
   }
 }

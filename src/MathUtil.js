@@ -106,3 +106,27 @@
    let v = {'x': p.x - center.x, 'y': p.y - center.y};
    return dot(v, v) <= radius * radius;
  }
+
+function circleAABB(center, radius, aabb) {
+  let p = {'x': center.x, 'y': center.y};
+  // Finds closest point to the possible collision
+  if (p.x < aabb.left) {
+    // L
+    p.x = aabb.left;
+  }
+  else if (p.x > aabb.left + aabb.width) {
+    // R
+    p.x = aabb.left + aabb.width;
+  }
+
+  if (p.y < aabb.top) {
+    // T
+    p.y = aabb.top;
+  }
+  else if (p.y >aabb.top + aabb.height) {
+    // B
+    p.y = aabb.top + aabb.height;
+  }
+  let distSqr = getSqrLength(p.x - center.x, p.y - center.y); //Will always be positive
+  return distSqr < (radius * radius);
+}
