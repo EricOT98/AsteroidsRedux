@@ -10,6 +10,7 @@ class Game {
    * @desc simple game constructor
    */
   constructor() {
+    this.mobObj = {};
     var elem = document.getElementById("myLoadingText");
     elem.innerHTML = "Loading";
     this.menuHandler = new MenuHandler();
@@ -135,6 +136,22 @@ class Game {
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
     this.useNewAssets = true;
+    var ws = new WebSocket("ws://149.153.106.151:8080/wstest");
+
+    //called when the websocket is opened
+    ws.onopen = function() {
+      var message = {};
+      message.type = "connect";
+      message.data = "game";
+      var mString = JSON.stringify(message);
+      ws.send(mString);
+    };
+
+    //called when the client receives a message
+    ws.onmessage = function (evt) {
+      var obj = JSON.parse(evt.data);
+      gameNs.game.mobObj = obj;
+    };
   }
 
   init() {
@@ -178,19 +195,31 @@ class Game {
       this.player.update(window.innerWidth, window.innerHeight);
 
       this.Ai.update(this.player.positionX, this.player.positionY);
-      this.player.isThrusting = this.keyboardManager["KeyW"];
+      this.player.isThrusting = this.keyboardManager["KeyW"] || this.mobObj.td;
+      if (this.keyboardManager["ArrowUp"] && this.wasUp2) {
+        this.wasUp2 = false;
+        this.useNewAssets = !this.useNewAssets;
+        this.player.updateAssets(this.AssetManager, this.useNewAssets);
+        this.Ai.updateAssets(this.AssetManager, this.useNewAssets);
+        this.asteroidManager.updateAssets(this.useNewAssets);
+      }else if (!this.keyboardManager["ArrowUp"]) {
+        this.wasUp2 = true;
+      }
 
-      this.player.isThrusting = this.keyboardManager["KeyW"];
-      if (this.keyboardManager["KeyD"]) {
+      var right = this.keyboardManager["KeyD"] || this.mobObj.rd;
+      var left = this.keyboardManager["KeyA"] || this.mobObj.ld;
+      var fire = this.keyboardManager["Space"] || this.mobObj.fd;
+
+      if (right) {
         this.player.turn(1);
       }
-      if (this.keyboardManager["KeyA"]) {
+      if (left) {
         this.player.turn(-1);
       }
       if ((this.keyboardManager["Space"] && this.wasUp) || (this.keyboardManager["Space"] && this.player.autoFire)) {
         this.wasUp = false;
         this.player.fire();
-      } else if (!this.keyboardManager["Space"]) {
+      } else if (!fire) {
         this.wasUp = true;
       }
 
