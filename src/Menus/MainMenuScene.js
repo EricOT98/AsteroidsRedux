@@ -1,5 +1,5 @@
 class MainMenuScene extends Scene {
-  constructor(menuHandler) {
+  constructor(menuHandler, game) {
     super("Main Menu", document.getElementById("main-div"),
         {'x': 0, 'y': 0, 'width': 100, 'height': 100},
         "",
@@ -10,7 +10,7 @@ class MainMenuScene extends Scene {
     );
     this.playBtn = new Button("Play",
         menuHandler.goToScene.bind(menuHandler, "Game"),
-        {'x': 35, 'y': 50, 'width': 30, 'height': 10},
+        {'x': 35, 'y': 35, 'width': 30, 'height': 10},
         "%"
     );
 
@@ -20,7 +20,7 @@ class MainMenuScene extends Scene {
 
     this.leaderboardBtn = new Button("Leaderboard",
         menuHandler.goToScene.bind(menuHandler, "Leaderboard"),
-        {'x': 35, 'y': 65, 'width': 30, 'height': 10},
+        {'x': 35, 'y': 50, 'width': 30, 'height': 10},
         "%"
     );
 
@@ -30,7 +30,7 @@ class MainMenuScene extends Scene {
 
     this.controlsBtn = new Button("Controls",
         menuHandler.goToScene.bind(menuHandler, "Controls"),
-        {'x': 35, 'y': 80, 'width': 30, 'height': 10},
+        {'x': 35, 'y': 65, 'width': 30, 'height': 10},
         "%"
     );
 
@@ -38,6 +38,15 @@ class MainMenuScene extends Scene {
     this.controlsBtn.addHoverImage("assets/ui/control_btn_pressed.png");
     this.mainMenu.addButton("Controls", this.controlsBtn);
 
+    this.reduxBtn = new Button("Redux",() => {
+          game.redux();
+        },
+        {'x': 35, 'y': 80, 'width': 30, 'height': 10},
+        "%"
+    );
+    this.reduxBtn.makeImageButton("assets/ui/back_btn.png");
+    this.reduxBtn.addHoverImage("assets/ui/back_btn_pressed.png");
+    this.mainMenu.addButton("Redux", this.reduxBtn);
     this.addMenu(this.mainMenu);
     this._containerDiv.style.backgroundImage = "url('assets/tempBackground.jpg')";
   }
