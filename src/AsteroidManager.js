@@ -59,8 +59,8 @@ class AsteroidManager {
 
   initialiseAsteroids() {
     for(var i = 0; i < this.initialAsteroidCount; i++) {
-        var x = randomRange(100, window.innerWidth - 100);
-        var y = randomRange(100, window.innerHeight - 100);
+        var x = -randomRange(0, window.innerWidth);
+        var y = -randomRange(0, window.innerHeight);
         var rotation = randomRange(0, Math.PI * 2);
         this.createAsteroid(x, y, rotation, 1);
     }
@@ -91,7 +91,6 @@ class AsteroidManager {
               this.createSplit(this.asteroids[i].xPos, this.asteroids[i].yPos, this.asteroids[i].rotation, asteroidGeneration + 1)
             }
             this.asteroids[i].split = true;
-          //  this.asteroids[i].emissionComplete = true
           }
           if(this.asteroids[i].emissionComplete) {
             this.asteroids.splice(i, 1); // Remove dead asteroids

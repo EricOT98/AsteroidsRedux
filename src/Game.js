@@ -202,7 +202,7 @@ class Game {
       var asteroidX = asteroids[i].centreX;
       var asteroidY = asteroids[i].centreY;
       var asteroidRad = asteroids[i].radius;
-      if(!this.player.shielded && asteroids[i].alive && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+      if(!this.player.shielded && !this.player.respawnInvincibility && asteroids[i].alive && circleTriangle({"x": asteroidX, "y": asteroidY}, asteroidRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
         this.player.reset();
         this.hud.lives -= 1;
       }
@@ -233,7 +233,7 @@ class Game {
       var bulletX = playerBullets[i].positionX;
       var bulletY = playerBullets[i].positionY;
       var bulletRad = playerBullets[i].radius;
-      if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2)) {
+      if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, this.Ai.centreX, this.Ai.centreY, this.Ai.width / 2) && this.Ai.alive === true) {
         playerBullets[i].alive = false;
         this.Ai.die();
       }
@@ -242,13 +242,16 @@ class Game {
       var bulletX = alienBullets[i].positionX;
       var bulletY = alienBullets[i].positionY;
       var bulletRad = alienBullets[i].radius;
-      if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+      if(circleTriangle({"x": bulletX, "y": bulletY}, bulletRad, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]) && !this.player.shielded && !this.player.respawnInvincibility) {
         alienBullets[i].alive = false;
         this.hud.lives -= 1;
         this.player.reset();
       }
     }
-    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]) 
+    && this.Ai.alive === true 
+    && !this.player.shielded 
+    && !this.player.respawnInvincibility) {
       this.hud.lives -= 1;
       this.player.reset();
     }
