@@ -9,8 +9,10 @@ class MainMenuScene extends Scene {
         {'x': 1120, 'y': 600, 'width': 1600, 'height': 1000},
         "px"
     );
-    this.playBtn = new Button("Play",
-        menuHandler.goToScene.bind(menuHandler, "Game"),
+    this.playBtn = new Button("Play",function() {
+        menuHandler.goToScene("Game");
+        game.reset();
+    },
         {'x': 35, 'y': 10, 'width': 35, 'height': 15},
         "%"
     );
