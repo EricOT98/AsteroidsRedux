@@ -6,7 +6,7 @@ class MainMenuScene extends Scene {
         "%"
     );
     this.mainMenu = new Menu("Main Menu",
-        {'x': 1120, 'y': 600, 'width': 1600, 'height': 1000},
+        {'x': window.innerWidth * 0.1, 'y':window.innerHeight * 0.1 + 110, 'width': window.innerWidth * 0.8, 'height':window.innerHeight * 0.7},
         "px"
     );
 
@@ -15,7 +15,7 @@ class MainMenuScene extends Scene {
         game.reset();
         menuHandler.goToScene("Game");
     },
-        {'x': 35, 'y': 10, 'width': 35, 'height': 15},
+        {'x': 35, 'y': 4, 'width': 35, 'height': 10},
         "%"
     );
 
@@ -27,7 +27,7 @@ class MainMenuScene extends Scene {
         game.click.play();
         menuHandler.goToScene("Leaderboard");
     },
-        {'x': 35, 'y': 45, 'width': 35, 'height': 15},
+        {'x': 35, 'y': 28, 'width': 35, 'height': 10},
         "%"
     );
 
@@ -39,7 +39,7 @@ class MainMenuScene extends Scene {
         game.click.play();
         menuHandler.goToScene("Controls");
     },
-        {'x': 35, 'y': 80, 'width': 35, 'height': 15},
+        {'x': 35, 'y': 52, 'width': 35, 'height': 10},
         "%"
     );
 
@@ -51,7 +51,7 @@ class MainMenuScene extends Scene {
           game.click.play();
           game.redux();
         },
-        {'x': 35, 'y': 80, 'width': 30, 'height': 10},
+        {'x': 35, 'y': 76, 'width': 35, 'height': 10},
         "%"
     );
     this.reduxBtn.makeImageButton("assets/ui/back_btn.png");
