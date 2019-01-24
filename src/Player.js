@@ -112,13 +112,17 @@ class Player{
     // Powerups
     if(this.shielded){
       this.shieldTime+=1;
+      gameNs.game.hud.pickUpShield = true;
       if(this.shieldTime > 15 * 60){
+        gameNs.game.hud.pickUpShield = false;
         this.shielded=false;
       }
     }
     if(this.autoFire){
       this.autoTime+=1;
+      gameNs.game.hud.pickUpFire = true;
       if(this.autoTime > 2 * 60){
+        gameNs.game.hud.pickUpFire = false;
         this.autoFire=false;
       }
     }

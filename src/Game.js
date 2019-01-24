@@ -37,6 +37,8 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_1.png');
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_2.png');
     this.AssetManager.queueDownloadImage('assets/images/asteroid_logo_3.png');
+    this.AssetManager.queueDownloadImage('assets/powerups/powerupshield.png');
+    this.AssetManager.queueDownloadImage('assets/powerups/poweruprof.png');
 
     this.AssetManager.downloadAllImages(() => {
 
@@ -59,7 +61,7 @@ class Game {
 
 
      // HUD
-      this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
+      this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'), this.AssetManager.getAsset('assets/powerups/powerupshield.png'), this.AssetManager.getAsset('assets/powerups/poweruprof.png'));
 
       this.gameLoaded = true;
       console.log("Loading Complete");
@@ -201,7 +203,7 @@ class Game {
         this.player.reset();
       }
     }
-    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2])) {
+    if(circleTriangle({"x": this.Ai.centreX, "y": this.Ai.centreY}, this.Ai.width / 2, this.player.triangle[0], this.player.triangle[1], this.player.triangle[2]) && this.Ai.isAlive) {
       this.hud.lives -= 1;
       this.player.reset();
     }

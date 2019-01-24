@@ -11,7 +11,7 @@ class HUD {
  * function to create a HUD.
  * @constructor HUD Consructor function
  */
-    constructor (livesImage)
+    constructor (livesImage, shieldImage, rateOfFireImage)
     {
         this.score = 0;
         this.UIX = 50;
@@ -32,10 +32,24 @@ class HUD {
         this.life3X = 300;
         this.life3Y = 125;
 
+        this.shield = new Image();
+        this.shieldX = window.innerWidth - ((this.width * 2 + 50) + 50);
+        this.shieldY = 100;
+
+        this.fire = new Image();
+        this.fireX = window.innerWidth - ((this.width * 1) + 50);
+        this.fireY = 100;
+
+
         this.life1 = livesImage;
         this.life2 = livesImage;
         this.life3 = livesImage;
 
+        this.shield = shieldImage;
+        this.fire = rateOfFireImage;
+
+        this.pickUpShield = false;
+        this.pickupFire = false;
     }
 
     /**
@@ -64,8 +78,7 @@ class HUD {
             ctx.drawImage(this.life2, this.life2X, this.life2Y, this.width, this.height);
             ctx.restore();
         }
-
-
+        
         if(this.lives > 2){
             ctx.save();
             ctx.translate(this.life3X + (this.width / 2), this.life3Y + (this.height / 2));
@@ -75,6 +88,13 @@ class HUD {
             ctx.restore();
         }
 
+        if(this.pickUpShield){
+            ctx.drawImage(this.shield, this.shieldX, this.shieldY, this.width, this.height);
+        }
+
+        if(this.pickUpFire){
+            ctx.drawImage(this.fire, this.fireX, this.fireY, this.width, this.height);
+        }
     }
 
     /**
