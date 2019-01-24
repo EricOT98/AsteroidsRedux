@@ -61,6 +61,7 @@ class Game {
      // HUD
       this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'));
 
+      this.gameLoaded = true;
       console.log("Loading Complete");
     }); // Downloads all Images, when complete inside of function executes
 

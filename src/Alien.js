@@ -32,9 +32,13 @@ class Alien {
             this.angle = 0;
             this.centreX = 0;
             this.centreY = 0;
+            this.deathTimer = 0;
+            this.respawnTime = 480;
        }
 
     spawn() {
+        this.alive = true;
+        this.deathTimer = 0;
         var side = Math.floor(Math.random() * Math.floor(4));
         if(side === 0){
             this.position.x = -this.width;
@@ -62,33 +66,43 @@ class Alien {
     }
 
     update(playerPosx, playerPosy) {
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-        this.centreX = this.position.x + this.width / 2;
-        this.centreY = this.position.y + this.height / 2;
-        this.checkWrap();
+        if(this.alive) {
+            this.position.x += this.velocity.x;
+            this.position.y += this.velocity.y;
+            this.centreX = this.position.x + this.width / 2;
+            this.centreY = this.position.y + this.height / 2;
+            this.checkWrap();
 
-        if(this.clock > this.fireRate) {
-            this.fire(playerPosx, playerPosy);
-            this.clock = 0;
+            if(this.clock > this.fireRate) {
+                this.fire(playerPosx, playerPosy);
+                this.clock = 0;
+            }
+
+            for(var x=0; x < this.bullets.length; x++) {
+            this.bullets[x].update();
+        
+            if(this.bullets[x].alive === false) {
+                this.bullets.splice(x, 1); //remove dead bullet
+            }
+            }
+
+            this.clock +=1;
         }
-
-        for(var x=0; x < this.bullets.length; x++) {
-          this.bullets[x].update();
-    
-          if(this.bullets[x].alive === false) {
-            this.bullets.splice(x, 1); //remove dead bullet
-          }
+        else{
+            this.deathTimer += 1;
+            if(this.deathTimer > this.respawnTime){
+                this.spawn();
+            }
         }
-
-        this.clock +=1;
     }
 
     draw(ctx) {
-        ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
+        if(this.alive) {
+            ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
 
-        for(var x=0; x < this.bullets.length; x++) {
-            this.bullets[x].draw(ctx);
+            for(var x=0; x < this.bullets.length; x++) {
+                this.bullets[x].draw(ctx);
+            }
         }
      }
 
@@ -114,6 +128,7 @@ class Alien {
      }
 
      die() {
-         
+         this.alive = false;
+         this.bullets = [];
      }
 }
