@@ -1,4 +1,14 @@
+/**
+ * @author Eric O'Toole
+ */
+
 class ControlsScene extends Scene {
+  /**
+   * Default constructor for the control scene
+   * @constructor
+   * @param {MenuHandler} menuHandler
+   * @param {AssetManager} assetManager
+   */
   constructor(menuHandler, assetManager) {
     super("Controls", document.getElementById("main-div"),
         {'x': 0, 'y': 0, 'width': 100, 'height': 100},
@@ -30,12 +40,20 @@ class ControlsScene extends Scene {
     this.addMenu(this.controlsMenu);
   }
 
+  /**
+   * Clear the canvas to prevent logo drawing
+   */
   draw() {
     let canvas = document.getElementById("canvas");
     let ctx = canvas.getContext("2d");
     ctx.clearRect(0,0, canvas.width, canvas.height);
   }
 
+  /**
+   * Swap the control scheme image
+   * @param {string} path
+   * @param {AssetManager} assetManager
+   */
   swapScheme(path, assetManager) {
     if (this.controlsMenu._containerDiv.contains(this.controlsImg)) {
       this.controlsMenu._containerDiv.removeChild(this.controlsImg);

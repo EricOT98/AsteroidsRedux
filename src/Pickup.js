@@ -1,4 +1,12 @@
 class PickUp {
+  /**
+   *
+   * @param {number} x - X coordinate
+   * @param {number} y - Y coordinate
+   * @param {string} type - The type of the pickup
+   * @param {Player} player - The player object
+   * @param {Hud} hud - The hud object
+   */
   constructor(x, y, type,player, hud) {
     this.player = player;
     this.x = x;
@@ -31,6 +39,10 @@ class PickUp {
     this.angle=0;
   }
 
+  /**
+   * Update the pickup checking for collision with the player,
+   * and applying the effects
+   */
   update() {
     this.emitter.addNewParticles();
     this.emitter.plotParticles(window.innerWidth, window.innerHeight);
@@ -53,10 +65,13 @@ class PickUp {
     }
   }
 
+  /**
+   * Draw the pickup and particles if the pickup is alive
+   * @param {CanvasRenderingContext2D} ctx - The canvas context
+   */
   draw(ctx) {
     if (this.alive) {
       this.emitter.draw(ctx);
-
       ctx.save();
       ctx.translate(this.centreX, this.centreY);
       let radians = this.angle/180 * Math.PI;

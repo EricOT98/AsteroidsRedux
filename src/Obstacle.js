@@ -1,4 +1,20 @@
+/**
+ * @Author: Eric O 'Toole
+ */
+
 class Obstacle {
+
+
+  /**
+   * Default obstacle constructor
+   * @param {number} x - x pos
+   * @param {number} y - Y pos
+   * @param {number} width - Width of obs
+   * @param {number} height - Height of obs
+   * @param {number} speed - Speed of the obs
+   * @param {number} direction -
+   * @param {AssetManager} assetManager
+   */
   constructor(x = 0, y = 0, width = 0, height = 0, speed = 0, direction = 0, assetManager) {
     this.x = x;
     this.y = y;
@@ -13,6 +29,9 @@ class Obstacle {
     this.img = assetManager.getAsset("assets/images/obstacle.png");
   }
 
+  /**
+   * Move the obstacle in its direction
+   */
   update() {
     this.wrapAround();
     this.x += this.speed * Math.cos(this.direction);
@@ -29,11 +48,17 @@ class Obstacle {
     }
   }
 
+  /**
+   * Render the obstacle image
+   * @param {CanvasRenderingContext2D} ctx
+   */
   draw(ctx) {
-
     ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 
+  /**
+   * Wraparound spawn for the obstacle
+   */
   wrapAround() {
     if (this.x < -this.width) {
       this.x = window.innerWidth;
