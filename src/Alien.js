@@ -39,6 +39,10 @@ class Alien {
             this.useNewAssets = false;
        }
 
+    /**
+     * Alien Ai Update Assets Function
+     * @function updateAssets , pass in assetmanager and new Assets
+     */
     updateAssets(assetManager, useNewAssets){
       this.useNewAssets = useNewAssets;
       if(this.useNewAssets === true){
@@ -48,6 +52,11 @@ class Alien {
         this.setImage(assetManager.getAsset('assets/images/Alien-1.png'));
       }
     }
+
+    /**
+     * Alien Ai Update Spawn Function
+     * @function spawn , Spawns in Ai in random position off screen and sets its velocity randomly.
+     */
     spawn() {
         this.alive = true;
         this.deathTimer = 0;
@@ -73,10 +82,21 @@ class Alien {
         this.velocity.y = ((Math.random() * 2) - 1) * Math.floor(Math.random() * Math.floor(this.speed) + 1);
     }
 
+    /**
+     * Alien Ai Set Image Function
+     * @function setImage , Sets the image to be drawn.
+     * @param {Image} newImage, new image to be drawn
+     */
     setImage(newImage) {
         this.image = newImage;
     }
 
+    /**
+     * Alien Ai Update Function
+     * @function update , Updates Ai.
+     * @param {Integer} playerPosx, players x position.
+     * @param {Integer} playerPosy, players y position.
+     */
     update(playerPosx, playerPosy) {
         if(this.alive) {
             this.position.x += this.velocity.x;
@@ -108,6 +128,11 @@ class Alien {
         }
     }
 
+     /**
+     * Alien Ai Draw Function
+     * @function draw , Draws Ai.
+     * @param {ctx} ctx, Canvas context to be drawn on.
+     */
     draw(ctx) {
         if(this.alive) {
             ctx.drawImage(this.image, this.position.x, this.position.y, this.width, this.height);
@@ -118,6 +143,12 @@ class Alien {
         }
      }
 
+     /**
+     * Alien Ai Fire Function
+     * @function fire , Fires a bullet at the players direction.
+     * @param {Integer} playerPosx, players x position.
+     * @param {Integer} playerPosy, players y position.
+     */
      fire(playerPosx, playerPosy) {
         this.angle = Math.atan2(this.position.y - playerPosy, this.position.x - playerPosx);
 
@@ -132,6 +163,10 @@ class Alien {
 
      }
 
+      /**
+     * Alien Ai Check Wrap Function
+     * @function checkWrap , checks which side of the screen the Ai flys off and wraps its position.
+     */
      checkWrap() {
          if(this.position.x + this.width < 0){
             this.position.x = window.innerWidth;
@@ -147,6 +182,10 @@ class Alien {
          }
      }
 
+      /**
+     * Alien Ai Die Function
+     * @function die , Kills the Alien Ai and clears its bullets list.
+     */
      die() {
          this.alive = false;
          this.bullets = [];

@@ -21,6 +21,11 @@ class LeaderboardScene extends Scene {
     this.addMenu(this.leaderboardMenu);
     }
 
+     /**
+     * Leaderboard scene.
+     * @function drawLeaderboard, Loops through top players and displays them in order.
+     * @param {ctx} ctx, canvas context to draw on.
+     */
   drawLeaderboard(ctx) {
     var canv2 =  document.getElementById("canvas");
     var ctx2 = canv2.getContext("2d");
