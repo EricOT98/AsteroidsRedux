@@ -48,6 +48,14 @@
  }
 
 
+/**
+ * Get the closest point on a triangle from a point
+ * @param {Object} p - The point to check
+ * @param {Object} a - The 1st vertex of the triangle
+ * @param {Object} b - The 2nd vertex of the triangle
+ * @param {Object} c - The 3rd vertex of the triangle
+ * @returns {Object}
+ */
  function closestPointOnTriangle(p, a, b, c) {
    // Check p in region outside A
    let ab = {'x': b.x - a.x, 'y': b.y - a.y};
@@ -107,6 +115,13 @@
    return dot(v, v) <= radius * radius;
  }
 
+/**
+ * Check for circle AABB collision
+ * @param {Object} center - the center of the Object
+ * @param {Integer} radius - the radius of the circle
+ * @param {Object} aabb - the box bounds to check
+ * @returns {boolean}
+ */
 function circleAABB(center, radius, aabb) {
   let p = {'x': center.x, 'y': center.y};
   // Finds closest point to the possible collision

@@ -1,13 +1,25 @@
+/**
+ * @author Eric O' Toole
+ * @brief Manager class for all obstacle objects
+ */
 class ObstacleManager {
+  /**
+   * @constructor
+   * Default Constructor object for the Obstacle Manager
+   */
   constructor() {
     this.obstacles = [];
     this.maxObstacles = 3;
     this.minSpeed = 1;
     this.maxSpeed = 3;
-
     this.collisionEmitters = [];
   }
 
+  /**
+   * Create a collision emitter at the given point
+   * @param posX
+   * @param posY
+   */
   createCollisionEmitter(posX, posY){
     var emitter = new Emitter(new Vector(800, 530), Vector.fromAngle(0.10, 1), 10 ,'rgb(255,255,255)');
     emitter.setParticlesLifeTime(0.75);
@@ -22,6 +34,12 @@ class ObstacleManager {
     }
 
   }
+
+  /**
+   * Initialise all obstacles in a random position with
+   * random direction and speed
+   * @param {AssetManager} assetManager - The games asset manager
+   */
   initilaiseObstacles(assetManager) {
     if(!this.obstacles.length === 0) {
       this.obstacles = [];
@@ -37,10 +55,23 @@ class ObstacleManager {
     }
   }
 
+  /**
+   *
+   * @param {number} x - X coordinate
+   * @param {number} y - Y Coordinate
+   * @param {number} width - width of the obstacle
+   * @param {number} height - height of the obstacle
+   * @param {number} speed - speed of the obstacle
+   * @param {number} direction - direction in radians of the obstacle
+   * @param {AssetManager} assetManager - the games asset Manager
+   */
   createObstacle(x, y, width, height, speed, direction, assetManager) {
     this.obstacles.push(new Obstacle(x, y, width, height, speed, direction, assetManager));
   }
 
+  /**
+   * Update all obstacles, and their emitters
+   */
   update() {
     for (let i = 0; i < this.maxObstacles; ++i) {
       this.obstacles[i].update();
@@ -56,6 +87,10 @@ class ObstacleManager {
     }
   }
 
+  /**
+   * Draw all obstacles
+   * @param {CanvasRenderingContext2D} ctx
+   */
   draw(ctx) {
     for (let i = 0; i < this.maxObstacles; ++i) {
       this.obstacles[i].draw(ctx);

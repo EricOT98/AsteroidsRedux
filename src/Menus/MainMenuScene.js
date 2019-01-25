@@ -1,4 +1,13 @@
+/**
+ * @author Eric O' Toole
+ */
+
 class MainMenuScene extends Scene {
+  /**
+   * Default constructor for main menu
+   * @param {MenuHandler} menuHandler
+   * @param {Game} game
+   */
   constructor(menuHandler, game) {
     super("Main Menu", document.getElementById("main-div"),
         {'x': 0, 'y': 0, 'width': 100, 'height': 100},
