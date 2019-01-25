@@ -101,6 +101,7 @@ class Game {
       this.player = new Player(window.innerWidth / 2, window.innerHeight / 2, 50);
       this.player.setSprite(this.AssetManager.getAsset('assets/images/Ship-1.png'));
       this.powerups = [];
+      this.pickups = [];
       // Asteroid Manager
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
       this.obstacleManager = new ObstacleManager();
@@ -233,6 +234,14 @@ class Game {
           this.powerups.splice(i,1);
         }
       }
+
+      for (let i = 0; i < this.pickups.length; ++i) {
+        this.pickups[i].update();
+        if(!this.pickups[i].alive){
+          this.pickups.splice(i,1);
+        }
+      }
+
       if(this.useNewAssets) {
         this.obstacleManager.update();
       }
@@ -271,7 +280,7 @@ class Game {
         if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
           this.bang.play();
           playerBullets[j].alive = false;
-          asteroids[i].destroy(this.powerups, this.player, true);
+          asteroids[i].destroy(this.powerups,this.pickups, this.player, this.useNewAssets, this.hud);
           this.hud.updateScore(this.hud.score + 50);
         }
       }
@@ -282,7 +291,7 @@ class Game {
         if(checkCircleCircleCollision(bulletX, bulletY, bulletRad, asteroidX, asteroidY, asteroidRad) && asteroids[i].alive){
           this.bang.play();
           alienBullets[j].alive = false;
-          asteroids[i].destroy(this.powerups, this.player, true);
+          asteroids[i].destroy(this.powerups,this.pickups, this.player, this.useNewAssets, this.hud);
         }
       }
     }
@@ -389,12 +398,17 @@ class Game {
     if (this.useNewAssets) {
       this.obstacleManager.draw(ctx);
     }
-    this.hud.draw(ctx);
 
     for(var i =0; i< this.powerups.length; i++)
     {
       this.powerups[i].draw(ctx);
     }
+
+    for(let i = 0; i < this.pickups.length; ++i) {
+      this.pickups[i].draw(ctx);
+    }
+
+    this.hud.draw(ctx);
   }
 
   /**

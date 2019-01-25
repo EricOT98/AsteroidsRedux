@@ -29,7 +29,6 @@ class PowerUp{
     this.emitter.useACircle();
     this.emitter.updateSize(3,3);
     this.emitter.setPos(this.centreX,this.centreY);
-
     this.angle=0;
   }
   update()
