@@ -105,7 +105,6 @@ class Game {
       // Asteroid Manager
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
       this.obstacleManager = new ObstacleManager();
-      this.obstacleManager.initilaiseObstacles(this.AssetManager);
 
       // AI Alien
       this.Ai = new Alien();
@@ -503,6 +502,9 @@ class Game {
       this.hud.score = 0;
       this.hud.lives = 3;
       this.asteroidManager.asteroids = [];
+      this.obstacleManager.initilaiseObstacles(this.AssetManager);
+      this.powerups = [];
+      this.pickups = [];
       this.player.reset();
       this.Ai.alive = false;
       this.scoreboard = new ScoreboardManager();

@@ -41,7 +41,7 @@ class ObstacleManager {
    * @param {AssetManager} assetManager - The games asset manager
    */
   initilaiseObstacles(assetManager) {
-    if(!this.obstacles.length === 0) {
+    if(this.obstacles.length > 0) {
       this.obstacles = [];
     }
     for (let i = 0; i < this.maxObstacles; ++i) {

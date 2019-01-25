@@ -45,9 +45,7 @@ class MainMenuScene extends Scene {
     this.mainMenu.addButton("Leaderboard", this.leaderboardBtn);
 
     this.controlsBtn = new Button("Controls",() => {
-        game.click.play();
         menuHandler.goToScene("Controls");
-        game.obstacleManager.initilaiseObstacles(game.AssetManager);
     },
         {'x': 35, 'y': 52, 'width': 35, 'height': 10},
         "%"
