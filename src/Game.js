@@ -197,15 +197,15 @@ class Game {
 
       this.Ai.update(this.player.positionX, this.player.positionY);
       this.player.isThrusting = this.keyboardManager["KeyW"] || this.mobObj.td;
-      if (this.keyboardManager["ArrowUp"] && this.wasUp2) {
-        this.wasUp2 = false;
-        this.useNewAssets = !this.useNewAssets;
-        this.player.updateAssets(this.AssetManager, this.useNewAssets);
-        this.Ai.updateAssets(this.AssetManager, this.useNewAssets);
-        this.asteroidManager.updateAssets(this.useNewAssets);
-      }else if (!this.keyboardManager["ArrowUp"]) {
-        this.wasUp2 = true;
-      }
+      // if (this.keyboardManager["ArrowUp"] && this.wasUp2) {
+      //   this.wasUp2 = false;
+      //   this.useNewAssets = !this.useNewAssets;
+      //   this.player.updateAssets(this.AssetManager, this.useNewAssets);
+      //   this.Ai.updateAssets(this.AssetManager, this.useNewAssets);
+      //   this.asteroidManager.updateAssets(this.useNewAssets);
+      // }else if (!this.keyboardManager["ArrowUp"]) {
+      //   this.wasUp2 = true;
+      // }
 
       var right = this.keyboardManager["KeyD"] || this.mobObj.rd;
       var left = this.keyboardManager["KeyA"] || this.mobObj.ld;
