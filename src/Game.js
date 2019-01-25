@@ -83,7 +83,7 @@ class Game {
     this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn.png');
     this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn_pressed.png');
     this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn.png');
-    this.AssetManager.queueDownloadImage('assets/Retro/ui/redux_btn_pressed.png');
+    this.AssetManager.queueDownloadImage('assets/images/obstacle.png');
 
     // Sounds List
     this.AssetManager.queueDownloadSound('assets/sounds/fire.wav');
@@ -105,7 +105,7 @@ class Game {
       // Asteroid Manager
       this.asteroidManager = new AsteroidManager(3, 1, 3, this.AssetManager);
       this.obstacleManager = new ObstacleManager();
-      this.obstacleManager.initilaiseObstacles();
+      this.obstacleManager.initilaiseObstacles(this.AssetManager);
 
       // AI Alien
       this.Ai = new Alien();

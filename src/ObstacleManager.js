@@ -22,7 +22,7 @@ class ObstacleManager {
     }
 
   }
-  initilaiseObstacles() {
+  initilaiseObstacles(assetManager) {
     if(!this.obstacles.length === 0) {
       this.obstacles = [];
     }
@@ -33,12 +33,12 @@ class ObstacleManager {
       let height = randomRange(25, 200);
       let rotation = randomRange(0, Math.PI * 2);
       let speed = randomRange(this.minSpeed, this.maxSpeed);
-      this.createObstacle(x,y,width, height,speed, rotation)
+      this.createObstacle(x,y,width, height,speed, rotation, assetManager)
     }
   }
 
-  createObstacle(x, y, width, height, speed, direction) {
-    this.obstacles.push(new Obstacle(x, y, width, height, speed, direction));
+  createObstacle(x, y, width, height, speed, direction, assetManager) {
+    this.obstacles.push(new Obstacle(x, y, width, height, speed, direction, assetManager));
   }
 
   update() {
