@@ -120,20 +120,28 @@ class Game {
 
      // HUD
       this.hud = new HUD(this.AssetManager.getAsset('assets/images/Ship-1.png'),  this.AssetManager.getAsset('assets/powerups/powerupshield.png'), this.AssetManager.getAsset('assets/powerups/poweruprof.png'));
-      console.log("Images Loaded");
+    
       this.background = this.AssetManager.getAsset('assets/Stars-Background-01.png');
       this.player.setSound(this.AssetManager.getAsset('assets/sounds/fire.wav'));
       this.bang = this.AssetManager.getAsset('assets/sounds/bang.wav');
       this.kill = this.AssetManager.getAsset('assets/sounds/kill.wav');
       this.click = this.AssetManager.getAsset('assets/sounds/music.wav');
+
+      console.log("Assets Loaded");
+
       this.initMenus();
       this.redux();
+
+
     }); // Downloads all Images, when complete inside of function executes
 
+    // Setup Scoreboard
     this.scoreboard = new ScoreboardManager();
     this.scoreboard.startTimer();
     this.scoreboard.clearSessionStorage();
     this.scoreboard.initBoard("local");
+
+
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
     this.useNewAssets = true;
@@ -490,7 +498,6 @@ class Game {
   }
 
   reset() {
-    //debugger;
     if(this.AssetManager.loadComplete) {
       console.log("reset");
       this.hud.score = 0;
