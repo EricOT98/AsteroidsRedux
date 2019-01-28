@@ -29,7 +29,7 @@ var thirdHeight;
 function main()
 {
 
-  var ws = new WebSocket("ws://149.153.106.151:8080/wstest");
+  var ws = new WebSocket("ws://192.168.0.178:8080/wstest");
 
   //called when the websocket is opened
   ws.onopen = function() {

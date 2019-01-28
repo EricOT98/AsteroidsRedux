@@ -144,7 +144,7 @@ class Game {
     this.keyboardManager = new KeyboardManager(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"]);
     this.wasUp = true;
     this.useNewAssets = true;
-    var ws = new WebSocket("ws://149.153.106.151:8080/wstest");
+    var ws = new WebSocket("ws://192.168.0.178:8080/wstest");
 
     //called when the websocket is opened
     ws.onopen = function() {
@@ -203,6 +203,7 @@ class Game {
       this.player.update(window.innerWidth, window.innerHeight);
 
       this.Ai.update(this.player.positionX, this.player.positionY);
+      console.log(this.mobObj.fd);
       this.player.isThrusting = this.keyboardManager["KeyW"] || this.mobObj.td;
       // if (this.keyboardManager["ArrowUp"] && this.wasUp2) {
       //   this.wasUp2 = false;
@@ -218,13 +219,14 @@ class Game {
       var left = this.keyboardManager["KeyA"] || this.mobObj.ld;
       var fire = this.keyboardManager["Space"] || this.mobObj.fd;
 
+
       if (right) {
         this.player.turn(1);
       }
       if (left) {
         this.player.turn(-1);
       }
-      if ((this.keyboardManager["Space"] && this.wasUp) || (this.keyboardManager["Space"] && this.player.autoFire)) {
+      if ((fire && this.wasUp) || (fire && this.player.autoFire)) {
         this.wasUp = false;
         this.player.fire();
       } else if (!fire) {
