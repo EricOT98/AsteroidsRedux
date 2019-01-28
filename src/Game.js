@@ -203,7 +203,6 @@ class Game {
       this.player.update(window.innerWidth, window.innerHeight);
 
       this.Ai.update(this.player.positionX, this.player.positionY);
-      console.log(this.mobObj.fd);
       this.player.isThrusting = this.keyboardManager["KeyW"] || this.mobObj.td;
       // if (this.keyboardManager["ArrowUp"] && this.wasUp2) {
       //   this.wasUp2 = false;
@@ -218,7 +217,6 @@ class Game {
       var right = this.keyboardManager["KeyD"] || this.mobObj.rd;
       var left = this.keyboardManager["KeyA"] || this.mobObj.ld;
       var fire = this.keyboardManager["Space"] || this.mobObj.fd;
-
 
       if (right) {
         this.player.turn(1);
